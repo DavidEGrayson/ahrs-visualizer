@@ -53,7 +53,6 @@ static void update_model(CUBE_STATE_T *state);
 static void init_textures(CUBE_STATE_T *state);
 static void load_tex_images(CUBE_STATE_T *state);
 static void exit_func(void);
-static volatile int terminate;
 static CUBE_STATE_T _state, *state=&_state;
 
 
@@ -394,7 +393,6 @@ static void load_tex_images(CUBE_STATE_T *state)
 //------------------------------------------------------------------------------
 
 static void exit_func(void)
-// Function to be passed to atexit().
 {
    // clear screen
    glClear( GL_COLOR_BUFFER_BIT );
@@ -410,9 +408,7 @@ static void exit_func(void)
    free(state->tex_buf1);
    free(state->tex_buf2);
    free(state->tex_buf3);
-
-   printf("\ncube closed\n");
-} // exit_func()
+}
 
 //==============================================================================
 
@@ -432,9 +428,9 @@ int main ()
    // initialise the OGLES texture(s)
    init_textures(state);
 
-   while (!terminate)
+   while(1)
    {
-      //usleep(5*1000);
+      usleep(5*1000);
       update_model(state);
       redraw_scene(state);
    }
