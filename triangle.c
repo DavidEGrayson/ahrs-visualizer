@@ -1,25 +1,3 @@
-/*
-* Copyright (c) 2012 Broadcom Europe Ltd
-*
-* Licensed to the Apache Software Foundation (ASF) under one or more
-* contributor license agreements.  See the NOTICE file distributed with
-* this work for additional information regarding copyright ownership.
-* The ASF licenses this file to You under the Apache License, Version 2.0
-* (the "License"); you may not use this file except in compliance with
-* the License.  You may obtain a copy of the License at
-*
-*     http://www.apache.org/licenses/LICENSE-2.0
-*
-* Unless required by applicable law or agreed to in writing, software
-* distributed under the License is distributed on an "AS IS" BASIS,
-* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-* See the License for the specific language governing permissions and
-* limitations under the License.
-*
-*
-* A rotating cube rendered with OpenGL|ES. Three images used as textures on the cube faces.
-*/
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -42,7 +20,6 @@
 #ifndef M_PI
    #define M_PI 3.141592654
 #endif
-	
 
 typedef struct
 {
@@ -84,17 +61,7 @@ static volatile int terminate;
 static CUBE_STATE_T _state, *state=&_state;
 
 
-/***********************************************************
- * Name: init_ogl
- *
- * Arguments:
- *       CUBE_STATE_T *state - holds OGLES model info
- *
- * Description: Sets the display, OpenGL|ES context and screen stuff
- *
- * Returns: void
- *
- ***********************************************************/
+// Sets the display, OpenGL|ES context and screen stuff
 static void init_ogl(CUBE_STATE_T *state)
 {
    int32_t success = 0;
@@ -180,17 +147,7 @@ static void init_ogl(CUBE_STATE_T *state)
    glEnable(GL_CULL_FACE);
 }
 
-/***********************************************************
- * Name: init_model_proj
- *
- * Arguments:
- *       CUBE_STATE_T *state - holds OGLES model info
- *
- * Description: Sets the OpenGL|ES model to default values
- *
- * Returns: void
- *
- ***********************************************************/
+// Description: Sets the OpenGL|ES model to default values
 static void init_model_proj(CUBE_STATE_T *state)
 {
    float nearp = 1.0f;
@@ -219,17 +176,7 @@ static void init_model_proj(CUBE_STATE_T *state)
    reset_model(state);
 }
 
-/***********************************************************
- * Name: reset_model
- *
- * Arguments:
- *       CUBE_STATE_T *state - holds OGLES model info
- *
- * Description: Resets the Model projection and rotation direction
- *
- * Returns: void
- *
- ***********************************************************/
+// Resets the Model projection and rotation direction
 static void reset_model(CUBE_STATE_T *state)
 {
    // reset model position
@@ -238,9 +185,13 @@ static void reset_model(CUBE_STATE_T *state)
    glTranslatef(0.f, 0.f, -50.f);
 
    // reset model rotation
-   state->rot_angle_x = 45.f; state->rot_angle_y = 30.f; state->rot_angle_z = 0.f;
-   state->rot_angle_x_inc = 0.5f; state->rot_angle_y_inc = 0.5f; state->rot_angle_z_inc = 0.f;
-   state->distance = 40.f;
+   state->rot_angle_x = 45.f;
+   state->rot_angle_y = 30.f;
+   state->rot_angle_z = 0.0f;
+   state->rot_angle_x_inc = 0.5f;
+   state->rot_angle_y_inc = 0.5f;
+   state->rot_angle_z_inc = 0.0f;
+   state->distance = 40.0f;
 }
 
 /***********************************************************
