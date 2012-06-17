@@ -166,11 +166,6 @@ static void init_model_proj(CUBE_STATE_T *state)
 // Resets the Model projection and rotation direction
 static void reset_model(CUBE_STATE_T *state)
 {
-   // reset model position
-   glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-   glTranslatef(0.f, 0.f, -50.f);
-
    // reset model rotation
    state->rot_angle_x = 45.f;
    state->rot_angle_y = 30.f;
@@ -181,22 +176,12 @@ static void reset_model(CUBE_STATE_T *state)
    state->distance = 60.0f;
 }
 
-// Updates model projection to current position/rotation
+// Updates model variables to current position/rotation
 static void update_model(CUBE_STATE_T *state)
 {
-   // update position
    state->rot_angle_x = inc_and_wrap_angle(state->rot_angle_x, state->rot_angle_x_inc);
    state->rot_angle_y = inc_and_wrap_angle(state->rot_angle_y, state->rot_angle_y_inc);
    state->rot_angle_z = inc_and_wrap_angle(state->rot_angle_z, state->rot_angle_z_inc);
-
-   glLoadIdentity();
-   // move camera back to see the cube
-   glTranslatef(0, 0, -state->distance);
-
-   // Rotate model to new position
-   glRotatef(state->rot_angle_x, 1, 0, 0);
-   glRotatef(state->rot_angle_y, 0, 1, 0);
-   glRotatef(state->rot_angle_z, 0, 0, 1);
 }
 
 /***********************************************************
@@ -229,9 +214,17 @@ static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc)
  ***********************************************************/
 static void redraw_scene(CUBE_STATE_T *state)
 {
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   // move camera back to see the cube
+   glTranslatef(0, 0, -state->distance);
+
+   glRotatef(state->rot_angle_x, 1, 0, 0);
+   glRotatef(state->rot_angle_y, 0, 1, 0);
+   glRotatef(state->rot_angle_z, 0, 0, 1);
+
    // Start with a clear screen
    glClear(GL_COLOR_BUFFER_BIT);
-   glMatrixMode(GL_MODELVIEW);
 
    glEnable(GL_TEXTURE_2D);
    glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
