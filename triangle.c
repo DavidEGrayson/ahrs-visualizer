@@ -58,7 +58,6 @@ static CUBE_STATE_T _state, *state=&_state;
 // Sets the display, OpenGL|ES context and screen stuff
 static void init_ogl()
 {
-   int32_t success = 0;
    EGLBoolean result;
    EGLint num_config;
 
@@ -67,8 +66,6 @@ static void init_ogl()
    DISPMANX_ELEMENT_HANDLE_T dispman_element;
    DISPMANX_DISPLAY_HANDLE_T dispman_display;
    DISPMANX_UPDATE_HANDLE_T dispman_update;
-   VC_RECT_T dst_rect;
-   VC_RECT_T src_rect;
 
    static const EGLint attribute_list[] =
    {
@@ -99,31 +96,24 @@ static void init_ogl()
    assert(context!=EGL_NO_CONTEXT);
 
    // create an EGL window surface
-   success = graphics_get_display_size(0 /* LCD */, &screen_width, &screen_height);
+   int32_t success = graphics_get_display_size(0 /* LCD */, &screen_width, &screen_height);
    assert( success >= 0 );
 
-   dst_rect.x = 0;
-   dst_rect.y = 0;
-   dst_rect.width = screen_width;
-   dst_rect.height = screen_height;
-      
-   src_rect.x = 0;
-   src_rect.y = 0;
-   src_rect.width = screen_width << 16;
-   src_rect.height = screen_height << 16;
+   VC_RECT_T dst_rect = {.x = 0, .y = 0, .width = screen_width, .height = screen_height};
+   VC_RECT_T src_rect = {.x = 0, .y = 0, .width = screen_width<<16, .height = screen_height<<16};
 
-   dispman_display = vc_dispmanx_display_open( 0 /* LCD */);
-   dispman_update = vc_dispmanx_update_start( 0 );
-         
-   dispman_element = vc_dispmanx_element_add ( dispman_update, dispman_display,
+   dispman_display = vc_dispmanx_display_open(0 /* LCD */);
+   dispman_update = vc_dispmanx_update_start(0);
+
+   dispman_element = vc_dispmanx_element_add (dispman_update, dispman_display,
       0/*layer*/, &dst_rect, 0/*src*/,
       &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, 0/*transform*/);
-      
+
    nativewindow.element = dispman_element;
    nativewindow.width = screen_width;
    nativewindow.height = screen_height;
-   vc_dispmanx_update_submit_sync( dispman_update );
-      
+   vc_dispmanx_update_submit_sync(dispman_update);
+
    surface = eglCreateWindowSurface(display, config, &nativewindow, NULL);
    if(surface == EGL_NO_SURFACE)
    {
@@ -382,7 +372,7 @@ static void load_tex_images(CUBE_STATE_T *state)
    {
       bytes_read=fread(state->tex_buf2, 1, image_sz, tex_file2);
       assert(bytes_read == image_sz);  // some problem with file?
-      fclose(tex_file2);      
+      fclose(tex_file2);
    }
 
    tex_file3 = fopen(PATH "Gaudi_128_128.raw", "rb");
@@ -391,7 +381,7 @@ static void load_tex_images(CUBE_STATE_T *state)
       bytes_read=fread(state->tex_buf3, 1, image_sz, tex_file3);
       assert(bytes_read == image_sz);  // some problem with file?
       fclose(tex_file3);
-   }   
+   }
 }
 
 //------------------------------------------------------------------------------
