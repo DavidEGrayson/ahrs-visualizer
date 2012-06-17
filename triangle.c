@@ -292,11 +292,7 @@ static void init_textures(CUBE_STATE_T *state)
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
 
    // setup second texture - reuse first image
-   glBindTexture(GL_TEXTURE_2D, state->tex[1]);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_SIZE, IMAGE_SIZE, 0,
-                GL_RGB, GL_UNSIGNED_BYTE, state->tex_buf1);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLfloat)GL_NEAREST);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
+   state->tex[1] = state->tex[0];
 
    // third texture
    glBindTexture(GL_TEXTURE_2D, state->tex[2]);
@@ -306,11 +302,7 @@ static void init_textures(CUBE_STATE_T *state)
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
 
    // fourth texture  - reuse second image
-   glBindTexture(GL_TEXTURE_2D, state->tex[3]);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_SIZE, IMAGE_SIZE, 0,
-                GL_RGB, GL_UNSIGNED_BYTE, state->tex_buf2);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLfloat)GL_NEAREST);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
+   state->tex[3] = state->tex[2];
 
    //fifth texture
    glBindTexture(GL_TEXTURE_2D, state->tex[4]);
@@ -320,11 +312,7 @@ static void init_textures(CUBE_STATE_T *state)
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
 
    // sixth texture  - reuse third image
-   glBindTexture(GL_TEXTURE_2D, state->tex[5]);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_SIZE, IMAGE_SIZE, 0,
-                GL_RGB, GL_UNSIGNED_BYTE, state->tex_buf3);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLfloat)GL_NEAREST);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
+   state->tex[5] = state->tex[4];
 
    // setup overall texture environment
    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
