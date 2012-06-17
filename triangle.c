@@ -23,27 +23,25 @@
 
 typedef struct
 {
-   uint32_t screen_width;
-   uint32_t screen_height;
-// OpenGL|ES objects
+   uint32_t screen_width, screen_height;
+
+   // OpenGL|ES objects
    EGLDisplay display;
    EGLSurface surface;
    EGLContext context;
    GLuint tex[6];
-// model rotation vector and direction
-   GLfloat rot_angle_x_inc;
-   GLfloat rot_angle_y_inc;
-   GLfloat rot_angle_z_inc;
-// current model rotation angles
-   GLfloat rot_angle_x;
-   GLfloat rot_angle_y;
-   GLfloat rot_angle_z;
-// current distance from camera
+
+   // model rotation vector and direction
+   GLfloat rot_angle_x_inc, rot_angle_y_inc, rot_angle_z_inc;
+
+   // current model rotation angles
+   GLfloat rot_angle_x, rot_angle_y, rot_angle_z;
+
+   // current distance from camera
    GLfloat distance;
-// pointers to texture buffers
-   char *tex_buf1;
-   char *tex_buf2;
-   char *tex_buf3;
+
+   // pointers to texture buffers
+   char *tex_buf1, *tex_buf2, *tex_buf3;
 } CUBE_STATE_T;
 
 static void init_ogl(CUBE_STATE_T *state);
@@ -135,10 +133,8 @@ static void init_ogl(CUBE_STATE_T *state)
    result = eglMakeCurrent(state->display, state->surface, state->surface, state->context);
    assert(EGL_FALSE != result);
 
-   // Set background color and clear buffers
-   glClearColor(0.15f, 0.25f, 0.35f, 1.0f);
-   glClear( GL_COLOR_BUFFER_BIT );
-   glClear( GL_DEPTH_BUFFER_BIT );
+   glClearColor(0, 0, 0, 0.5);   // set background colors
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear buffers
    glShadeModel(GL_FLAT);
 
    // Enable back face culling.
@@ -233,21 +229,15 @@ static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc)
 }
 
 /***********************************************************
- * Name: redraw_scene
- *
- * Arguments:
  *       CUBE_STATE_T *state - holds OGLES model info
  *
  * Description:   Draws the model and calls eglSwapBuffers
  *                to render to screen
- *
- * Returns: void
- *
  ***********************************************************/
 static void redraw_scene(CUBE_STATE_T *state)
 {
    // Start with a clear screen
-   glClear( GL_COLOR_BUFFER_BIT );
+   glClear(GL_COLOR_BUFFER_BIT);
    glMatrixMode(GL_MODELVIEW);
 
    glEnable(GL_TEXTURE_2D);
@@ -258,33 +248,33 @@ static void redraw_scene(CUBE_STATE_T *state)
    glBindTexture(GL_TEXTURE_2D, state->tex[0]);
 
    // Need to rotate textures - do this by rotating each cube face
-   glRotatef(270.f, 0.f, 0.f, 1.f ); // front face normal along z axis
+   glRotatef(270, 0, 0, 1); // front face normal along z axis
 
    // draw first 4 vertices
-   glDrawArrays( GL_TRIANGLE_STRIP, 0, 4);
+   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
    // same pattern for other 5 faces - rotation chosen to make image orientation 'nice'
    glBindTexture(GL_TEXTURE_2D, state->tex[1]);
-   glRotatef(90.f, 0.f, 0.f, 1.f ); // back face normal along z axis
-   glDrawArrays( GL_TRIANGLE_STRIP, 4, 4);
+   glRotatef(90, 0, 0, 1); // back face normal along z axis
+   glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
 
    glBindTexture(GL_TEXTURE_2D, state->tex[2]);
-   glRotatef(90.f, 1.f, 0.f, 0.f ); // left face normal along x axis
-   glDrawArrays( GL_TRIANGLE_STRIP, 8, 4);
+   glRotatef(90, 1, 0, 0); // left face normal along x axis
+   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
 
    glBindTexture(GL_TEXTURE_2D, state->tex[3]);
-   glRotatef(90.f, 1.f, 0.f, 0.f ); // right face normal along x axis
-   glDrawArrays( GL_TRIANGLE_STRIP, 12, 4);
+   glRotatef(90, 1, 0, 0); // right face normal along x axis
+   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 
    glBindTexture(GL_TEXTURE_2D, state->tex[4]);
-   glRotatef(270.f, 0.f, 1.f, 0.f ); // top face normal along y axis
-   glDrawArrays( GL_TRIANGLE_STRIP, 16, 4);
+   glRotatef(270, 0, 1, 0); // top face normal along y axis
+   glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 
    glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
 
    glBindTexture(GL_TEXTURE_2D, state->tex[5]);
-   glRotatef(90.f, 0.f, 1.f, 0.f ); // bottom face normal along y axis
-   glDrawArrays( GL_TRIANGLE_STRIP, 20, 4);
+   glRotatef(90, 0, 1, 0); // bottom face normal along y axis
+   glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
 
    glDisable(GL_TEXTURE_2D);
 
