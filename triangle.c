@@ -40,7 +40,6 @@ typedef struct
    GLfloat rot_angle_z;
 // current distance from camera
    GLfloat distance;
-   GLfloat distance_inc;
 // pointers to texture buffers
    char *tex_buf1;
    char *tex_buf2;
@@ -51,7 +50,6 @@ static void init_ogl(CUBE_STATE_T *state);
 static void init_model_proj(CUBE_STATE_T *state);
 static void reset_model(CUBE_STATE_T *state);
 static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc);
-static GLfloat inc_and_clip_distance(GLfloat distance, GLfloat distance_inc);
 static void redraw_scene(CUBE_STATE_T *state);
 static void update_model(CUBE_STATE_T *state);
 static void init_textures(CUBE_STATE_T *state);
@@ -191,41 +189,28 @@ static void reset_model(CUBE_STATE_T *state)
    state->rot_angle_x_inc = 0.5f;
    state->rot_angle_y_inc = 0.5f;
    state->rot_angle_z_inc = 0.0f;
-   state->distance = 40.0f;
+   state->distance = 60.0f;
 }
 
-/***********************************************************
- * Name: update_model
- *
- * Arguments:
- *       CUBE_STATE_T *state - holds OGLES model info
- *
- * Description: Updates model projection to current position/rotation
- *
- * Returns: void
- *
- ***********************************************************/
+// Updates model projection to current position/rotation
 static void update_model(CUBE_STATE_T *state)
 {
    // update position
    state->rot_angle_x = inc_and_wrap_angle(state->rot_angle_x, state->rot_angle_x_inc);
    state->rot_angle_y = inc_and_wrap_angle(state->rot_angle_y, state->rot_angle_y_inc);
    state->rot_angle_z = inc_and_wrap_angle(state->rot_angle_z, state->rot_angle_z_inc);
-   state->distance    = inc_and_clip_distance(state->distance, state->distance_inc);
 
    glLoadIdentity();
    // move camera back to see the cube
-   glTranslatef(0.f, 0.f, -state->distance);
+   glTranslatef(0, 0, -state->distance);
 
    // Rotate model to new position
-   glRotatef(state->rot_angle_x, 1.f, 0.f, 0.f);
-   glRotatef(state->rot_angle_y, 0.f, 1.f, 0.f);
-   glRotatef(state->rot_angle_z, 0.f, 0.f, 1.f);
+   glRotatef(state->rot_angle_x, 1, 0, 0);
+   glRotatef(state->rot_angle_y, 0, 1, 0);
+   glRotatef(state->rot_angle_z, 0, 0, 1);
 }
 
 /***********************************************************
- * Name: inc_and_wrap_angle
- *
  * Arguments:
  *       GLfloat angle     current angle
  *       GLfloat angle_inc angle increment
@@ -234,43 +219,17 @@ static void update_model(CUBE_STATE_T *state)
  *                Wraps to 0 at 360 deg.
  *
  * Returns: new value of angle
- *
  ***********************************************************/
 static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc)
 {
    angle += angle_inc;
 
-   if (angle >= 360.0)
-      angle -= 360.f;
-   else if (angle <=0)
-      angle += 360.f;
+   if (angle >= 360)
+      angle -= 360;
+   else if (angle <= 0)
+      angle += 360;
 
    return angle;
-}
-
-/***********************************************************
- * Name: inc_and_clip_distance
- *
- * Arguments:
- *       GLfloat distance     current distance
- *       GLfloat distance_inc distance increment
- *
- * Description:   Increments or decrements distance by distance_inc units
- *                Clips to range
- *
- * Returns: new value of angle
- *
- ***********************************************************/
-static GLfloat inc_and_clip_distance(GLfloat distance, GLfloat distance_inc)
-{
-   distance += distance_inc;
-
-   if (distance >= 120.0f)
-      distance = 120.f;
-   else if (distance <= 40.0f)
-      distance = 40.0f;
-
-   return distance;
 }
 
 /***********************************************************
