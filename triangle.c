@@ -214,6 +214,9 @@ static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc)
  ***********************************************************/
 static void redraw_scene(CUBE_STATE_T *state)
 {
+   // Start with a clear screen
+   glClear(GL_COLOR_BUFFER_BIT);
+
    glMatrixMode(GL_MODELVIEW);
    glLoadIdentity();
    // move camera back to see the cube
@@ -223,10 +226,6 @@ static void redraw_scene(CUBE_STATE_T *state)
    glRotatef(state->rot_angle_y, 0, 1, 0);
    glRotatef(state->rot_angle_z, 0, 0, 1);
 
-   // Start with a clear screen
-   glClear(GL_COLOR_BUFFER_BIT);
-
-   glEnable(GL_TEXTURE_2D);
    glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
    // Draw first (front) face:
@@ -262,8 +261,6 @@ static void redraw_scene(CUBE_STATE_T *state)
    glRotatef(90, 0, 1, 0); // bottom face normal along y axis
    glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
 
-   glDisable(GL_TEXTURE_2D);
-
    eglSwapBuffers(display, surface);
 }
 
@@ -281,6 +278,8 @@ static void redraw_scene(CUBE_STATE_T *state)
  ***********************************************************/
 static void init_textures(CUBE_STATE_T *state)
 {
+   glEnable(GL_TEXTURE_2D);
+
    // load three texture buffers but use them on six OGL|ES texture surfaces
    load_tex_images(state);
    glGenTextures(6, &state->tex[0]);
