@@ -126,7 +126,12 @@ static void init_ogl(CUBE_STATE_T *state)
    vc_dispmanx_update_submit_sync( dispman_update );
       
    state->surface = eglCreateWindowSurface( state->display, config, &nativewindow, NULL );
-   assert(state->surface != EGL_NO_SURFACE);
+   if(state->surface == EGL_NO_SURFACE)
+   {
+      fprintf(stderr, "eglCreateWindowSurface returned ELG_NO_SURFACE.  "
+        "Try closing other OpenGL programs.\n");
+      exit(1);
+   }
 
    // connect the context to the surface
    result = eglMakeCurrent(state->display, state->surface, state->surface, state->context);
@@ -417,8 +422,8 @@ int main ()
    bcm_host_init();
 
    // Clear application state
-   memset( state, 0, sizeof( *state ) );
-      
+   memset(state, 0, sizeof(*state));
+
    // Start OGLES
    init_ogl(state);
 
