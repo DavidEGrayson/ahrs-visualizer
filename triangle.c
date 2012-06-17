@@ -21,14 +21,13 @@
    #define M_PI 3.141592654
 #endif
 
+uint32_t screen_width, screen_height;
+EGLDisplay display;
+EGLSurface surface;
+EGLContext context;
+
 typedef struct
 {
-   uint32_t screen_width, screen_height;
-
-   // OpenGL|ES objects
-   EGLDisplay display;
-   EGLSurface surface;
-   EGLContext context;
    GLuint tex[6];
 
    // model rotation vector and direction
@@ -44,7 +43,7 @@ typedef struct
    char *tex_buf1, *tex_buf2, *tex_buf3;
 } CUBE_STATE_T;
 
-static void init_ogl(CUBE_STATE_T *state);
+static void init_ogl();
 static void init_model_proj(CUBE_STATE_T *state);
 static void reset_model(CUBE_STATE_T *state);
 static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc);
@@ -57,7 +56,7 @@ static CUBE_STATE_T _state, *state=&_state;
 
 
 // Sets the display, OpenGL|ES context and screen stuff
-static void init_ogl(CUBE_STATE_T *state)
+static void init_ogl()
 {
    int32_t success = 0;
    EGLBoolean result;
@@ -84,34 +83,34 @@ static void init_ogl(CUBE_STATE_T *state)
    EGLConfig config;
 
    // get an EGL display connection
-   state->display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-   assert(state->display!=EGL_NO_DISPLAY);
+   display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
+   assert(display!=EGL_NO_DISPLAY);
 
    // initialize the EGL display connection
-   result = eglInitialize(state->display, NULL, NULL);
+   result = eglInitialize(display, NULL, NULL);
    assert(EGL_FALSE != result);
 
    // get an appropriate EGL frame buffer configuration
-   result = eglChooseConfig(state->display, attribute_list, &config, 1, &num_config);
+   result = eglChooseConfig(display, attribute_list, &config, 1, &num_config);
    assert(EGL_FALSE != result);
 
    // create an EGL rendering context
-   state->context = eglCreateContext(state->display, config, EGL_NO_CONTEXT, NULL);
-   assert(state->context!=EGL_NO_CONTEXT);
+   context = eglCreateContext(display, config, EGL_NO_CONTEXT, NULL);
+   assert(context!=EGL_NO_CONTEXT);
 
    // create an EGL window surface
-   success = graphics_get_display_size(0 /* LCD */, &state->screen_width, &state->screen_height);
+   success = graphics_get_display_size(0 /* LCD */, &screen_width, &screen_height);
    assert( success >= 0 );
 
    dst_rect.x = 0;
    dst_rect.y = 0;
-   dst_rect.width = state->screen_width;
-   dst_rect.height = state->screen_height;
+   dst_rect.width = screen_width;
+   dst_rect.height = screen_height;
       
    src_rect.x = 0;
    src_rect.y = 0;
-   src_rect.width = state->screen_width << 16;
-   src_rect.height = state->screen_height << 16;        
+   src_rect.width = screen_width << 16;
+   src_rect.height = screen_height << 16;
 
    dispman_display = vc_dispmanx_display_open( 0 /* LCD */);
    dispman_update = vc_dispmanx_update_start( 0 );
@@ -121,12 +120,12 @@ static void init_ogl(CUBE_STATE_T *state)
       &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, 0/*transform*/);
       
    nativewindow.element = dispman_element;
-   nativewindow.width = state->screen_width;
-   nativewindow.height = state->screen_height;
+   nativewindow.width = screen_width;
+   nativewindow.height = screen_height;
    vc_dispmanx_update_submit_sync( dispman_update );
       
-   state->surface = eglCreateWindowSurface( state->display, config, &nativewindow, NULL );
-   if(state->surface == EGL_NO_SURFACE)
+   surface = eglCreateWindowSurface(display, config, &nativewindow, NULL);
+   if(surface == EGL_NO_SURFACE)
    {
       fprintf(stderr, "eglCreateWindowSurface returned ELG_NO_SURFACE.  "
         "Try closing other OpenGL programs.\n");
@@ -134,7 +133,7 @@ static void init_ogl(CUBE_STATE_T *state)
    }
 
    // connect the context to the surface
-   result = eglMakeCurrent(state->display, state->surface, state->surface, state->context);
+   result = eglMakeCurrent(display, surface, surface, context);
    assert(EGL_FALSE != result);
 
    glClearColor(0, 0, 0, 0.5);   // set background colors
@@ -155,13 +154,13 @@ static void init_model_proj(CUBE_STATE_T *state)
 
    glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
 
-   glViewport(0, 0, (GLsizei)state->screen_width, (GLsizei)state->screen_height);
+   glViewport(0, 0, (GLsizei)screen_width, (GLsizei)screen_height);
       
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
 
    hht = nearp * (float)tan(45.0 / 2.0 / 180.0 * M_PI);
-   hwd = hht * (float)state->screen_width / (float)state->screen_height;
+   hwd = hht * (float)screen_width / (float)screen_height;
 
    glFrustumf(-hwd, hwd, -hht, hht, nearp, farp);
    
@@ -282,7 +281,7 @@ static void redraw_scene(CUBE_STATE_T *state)
 
    glDisable(GL_TEXTURE_2D);
 
-   eglSwapBuffers(state->display, state->surface);
+   eglSwapBuffers(display, surface);
 }
 
 /***********************************************************
@@ -401,13 +400,13 @@ static void exit_func(void)
 {
    // clear screen
    glClear( GL_COLOR_BUFFER_BIT );
-   eglSwapBuffers(state->display, state->surface);
+   eglSwapBuffers(display, surface);
 
    // Release OpenGL resources
-   eglMakeCurrent( state->display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT );
-   eglDestroySurface( state->display, state->surface );
-   eglDestroyContext( state->display, state->context );
-   eglTerminate( state->display );
+   eglMakeCurrent(display, EGL_NO_SURFACE, EGL_NO_SURFACE, EGL_NO_CONTEXT);
+   eglDestroySurface(display, surface);
+   eglDestroyContext(display, context);
+   eglTerminate(display);
 
    // release texture buffers
    free(state->tex_buf1);
@@ -425,7 +424,7 @@ int main ()
    memset(state, 0, sizeof(*state));
 
    // Start OGLES
-   init_ogl(state);
+   init_ogl();
 
    // Setup the model world
    init_model_proj(state);
