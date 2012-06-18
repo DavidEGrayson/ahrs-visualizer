@@ -39,8 +39,6 @@ typedef struct
    // current distance from camera
    GLfloat distance;
 
-   // pointers to texture buffers
-   char *tex_buf1, *tex_buf2, *tex_buf3;
 } CUBE_STATE_T;
 
 static void init_ogl();
@@ -50,7 +48,6 @@ static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc);
 static void redraw_scene(CUBE_STATE_T *state);
 static void update_model(CUBE_STATE_T *state);
 static void init_textures(CUBE_STATE_T *state);
-static void load_tex_images(CUBE_STATE_T *state);
 static void exit_func(void);
 static CUBE_STATE_T _state, *state=&_state;
 
@@ -264,108 +261,52 @@ static void redraw_scene(CUBE_STATE_T *state)
    eglSwapBuffers(display, surface);
 }
 
-/***********************************************************
- * Name: init_textures
- *
- * Arguments:
- *       CUBE_STATE_T *state - holds OGLES model info
- *
- * Description:   Initialise OGL|ES texture surfaces to use image
- *                buffers
- *
- * Returns: void
- *
- ***********************************************************/
+static GLuint init_texture(const char * file_name, int width, int height)
+{
+   int size = width*height*3;
+   unsigned char * data = malloc(size);
+   if (data == 0)
+   {
+      fprintf(stderr, "Unable to allocate %d bytes for %s texture.\n", size, file_name);
+      exit(2);
+   }
+
+   FILE * file = fopen(file_name, "rb");
+   if (file == 0)
+   {
+      perror(file_name);
+      exit(3);
+   }
+
+   size_t bytes_read = fread(data, 1, size, file);
+   fclose(file);
+   if (bytes_read != size)
+   {
+      fprintf(stderr, "Expected to read %d bytes from %s but read %d.\n", size, file_name, bytes_read);
+      free(data);
+      exit(4);
+   }
+
+   GLuint texture;
+   glGenTextures(1, &texture);
+   glBindTexture(GL_TEXTURE_2D, texture);
+   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+   //free(data);
+   printf("Returning %d for %s\n", texture, file_name); //tmphax
+   return texture;
+}
+
 static void init_textures(CUBE_STATE_T *state)
 {
    glEnable(GL_TEXTURE_2D);
-
-   // load three texture buffers but use them on six OGL|ES texture surfaces
-   load_tex_images(state);
-   glGenTextures(6, &state->tex[0]);
-
-   // setup first texture
-   glBindTexture(GL_TEXTURE_2D, state->tex[0]);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_SIZE, IMAGE_SIZE, 0,
-                GL_RGB, GL_UNSIGNED_BYTE, state->tex_buf1);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-   // setup second texture - reuse first image
-   state->tex[1] = state->tex[0];
-
-   // third texture
-   glBindTexture(GL_TEXTURE_2D, state->tex[2]);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_SIZE, IMAGE_SIZE, 0,
-                GL_RGB, GL_UNSIGNED_BYTE, state->tex_buf2);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLfloat)GL_NEAREST);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
-
-   // fourth texture  - reuse second image
-   state->tex[3] = state->tex[2];
-
-   //fifth texture
-   glBindTexture(GL_TEXTURE_2D, state->tex[4]);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_SIZE, IMAGE_SIZE, 0,
-                GL_RGB, GL_UNSIGNED_BYTE, state->tex_buf3);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLfloat)GL_NEAREST);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
-
-   // sixth texture  - reuse third image
-   state->tex[5] = state->tex[4];
-
-   // setup overall texture environment
    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-   free(state->tex_buf1);
-   free(state->tex_buf2);
-   free(state->tex_buf3);
-}
-
-/***********************************************************
- * Name: load_tex_images
- *
- * Arguments:
- *       void
- *
- * Description: Loads three raw images to use as textures on faces
- *
- * Returns: void
- *
- ***********************************************************/
-static void load_tex_images(CUBE_STATE_T *state)
-{
-   FILE *tex_file1 = NULL, *tex_file2=NULL, *tex_file3 = NULL;
-   int bytes_read, image_sz = IMAGE_SIZE*IMAGE_SIZE*3;
-
-   state->tex_buf1 = malloc(image_sz);
-   state->tex_buf2 = malloc(image_sz);
-   state->tex_buf3 = malloc(image_sz);
-
-   tex_file1 = fopen(PATH "Lucca_128_128.raw", "rb");
-   if (tex_file1 && state->tex_buf1)
-   {
-      bytes_read=fread(state->tex_buf1, 1, image_sz, tex_file1);
-      assert(bytes_read == image_sz);  // some problem with file?
-      fclose(tex_file1);
-   }
-
-   tex_file2 = fopen(PATH "Djenne_128_128.raw", "rb");
-   if (tex_file2 && state->tex_buf2)
-   {
-      bytes_read=fread(state->tex_buf2, 1, image_sz, tex_file2);
-      assert(bytes_read == image_sz);  // some problem with file?
-      fclose(tex_file2);
-   }
-
-   tex_file3 = fopen(PATH "Gaudi_128_128.raw", "rb");
-   if (tex_file3 && state->tex_buf3)
-   {
-      bytes_read=fread(state->tex_buf3, 1, image_sz, tex_file3);
-      assert(bytes_read == image_sz);  // some problem with file?
-      fclose(tex_file3);
-   }
+   state->tex[1] = state->tex[0] = init_texture(PATH "Lucca_128_128.raw", 128, 128);
+   state->tex[3] = state->tex[2] = init_texture(PATH "Djenne_128_128.raw", 128, 128);
+   state->tex[5] = state->tex[4] = init_texture(PATH "Gaudi_128_128.raw", 128, 128);
 }
 
 //------------------------------------------------------------------------------
@@ -408,6 +349,6 @@ int main ()
       redraw_scene(state);
    }
    exit_func();
-  return 0;
+   return 0;
 }
 
