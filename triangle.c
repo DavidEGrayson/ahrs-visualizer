@@ -293,7 +293,7 @@ static GLuint init_texture(const char * file_name, int width, int height)
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   //free(data);
+   free(data);
    printf("Returning %d for %s\n", texture, file_name); //tmphax
    return texture;
 }
