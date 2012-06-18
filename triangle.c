@@ -160,15 +160,13 @@ static void init_model_proj(CUBE_STATE_T *state)
    reset_model(state);
 }
 
-// Resets the Model projection and rotation direction
 static void reset_model(CUBE_STATE_T *state)
 {
-   // reset model rotation
    state->rot_angle_x = 45.f;
    state->rot_angle_y = 30.f;
    state->rot_angle_z = 0.0f;
    state->rot_angle_x_inc = 0.5f;
-   state->rot_angle_y_inc = 0.5f;
+   state->rot_angle_y_inc = 0.6f;
    state->rot_angle_z_inc = 0.0f;
    state->distance = 60.0f;
 }
@@ -294,7 +292,6 @@ static GLuint init_texture(const char * file_name, int width, int height)
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
    glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
    free(data);
-   printf("Returning %d for %s\n", texture, file_name); //tmphax
    return texture;
 }
 
@@ -309,8 +306,6 @@ static void init_textures(CUBE_STATE_T *state)
    state->tex[5] = state->tex[4] = init_texture(PATH "Gaudi_128_128.raw", 128, 128);
 }
 
-//------------------------------------------------------------------------------
-
 static void exit_func(void)
 {
    // clear screen
@@ -324,14 +319,9 @@ static void exit_func(void)
    eglTerminate(display);
 }
 
-//==============================================================================
-
-int main ()
+int main()
 {
    bcm_host_init();
-
-   // Clear application state
-   memset(state, 0, sizeof(*state));
 
    // Start OGLES
    init_ogl();
