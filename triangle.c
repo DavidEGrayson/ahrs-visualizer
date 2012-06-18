@@ -288,8 +288,8 @@ static void init_textures(CUBE_STATE_T *state)
    glBindTexture(GL_TEXTURE_2D, state->tex[0]);
    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, IMAGE_SIZE, IMAGE_SIZE, 0,
                 GL_RGB, GL_UNSIGNED_BYTE, state->tex_buf1);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, (GLfloat)GL_NEAREST);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, (GLfloat)GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
    // setup second texture - reuse first image
    state->tex[1] = state->tex[0];
@@ -381,11 +381,6 @@ static void exit_func(void)
    eglDestroySurface(display, surface);
    eglDestroyContext(display, context);
    eglTerminate(display);
-
-   // release texture buffers
-   free(state->tex_buf1);
-   free(state->tex_buf2);
-   free(state->tex_buf3);
 }
 
 //==============================================================================
