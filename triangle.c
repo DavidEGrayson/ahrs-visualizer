@@ -134,25 +134,22 @@ static void init_ogl()
 // Description: Sets the OpenGL|ES model to default values
 static void init_model_proj(CUBE_STATE_T *state)
 {
-   float nearp = 1.0f;
-   float farp = 500.0f;
-   float hht;
-   float hwd;
+   float nearp = 1, farp = 500.0f, hht, hwd;
 
-   glHint( GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST );
+   glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
 
    glViewport(0, 0, (GLsizei)screen_width, (GLsizei)screen_height);
-      
+
    glMatrixMode(GL_PROJECTION);
    glLoadIdentity();
 
-   hht = nearp * (float)tan(45.0 / 2.0 / 180.0 * M_PI);
-   hwd = hht * (float)screen_width / (float)screen_height;
+   hht = nearp * tan(45.0 / 2.0 / 180.0 * M_PI);
+   hwd = hht * screen_width / screen_height;
 
    glFrustumf(-hwd, hwd, -hht, hht, nearp, farp);
-   
-   glEnableClientState( GL_VERTEX_ARRAY );
-   glVertexPointer( 3, GL_BYTE, 0, quadx );
+
+   glEnableClientState(GL_VERTEX_ARRAY);
+   glVertexPointer(3, GL_BYTE, 0, quadx);
 
    glEnableClientState( GL_COLOR_ARRAY );
    glColorPointer(4, GL_FLOAT, 0, colorsf);
@@ -309,7 +306,7 @@ static void init_textures(CUBE_STATE_T *state)
 static void exit_func(void)
 {
    // clear screen
-   glClear( GL_COLOR_BUFFER_BIT );
+   glClear(GL_COLOR_BUFFER_BIT);
    eglSwapBuffers(display, surface);
 
    // Release OpenGL resources
@@ -334,7 +331,7 @@ int main()
 
    while(1)
    {
-      usleep(5*1000);
+      usleep(15*1000);
       update_model(state);
       redraw_scene(state);
    }
