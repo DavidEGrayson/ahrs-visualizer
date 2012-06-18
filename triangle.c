@@ -17,10 +17,6 @@
 
 #define IMAGE_SIZE 128
 
-#ifndef M_PI
-   #define M_PI 3.141592654
-#endif
-
 uint32_t screen_width, screen_height;
 EGLDisplay display;
 EGLSurface surface;
