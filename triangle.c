@@ -5,11 +5,11 @@
 #include <assert.h>
 #include <unistd.h>
 
-#include "bcm_host.h"
+#include <bcm_host.h>
 
-#include "GLES/gl.h"
-#include "EGL/egl.h"
-#include "EGL/eglext.h"
+#include <GLES/gl.h>
+#include <EGL/egl.h>
+#include <EGL/eglext.h>
 
 #include "cube_texture_and_coords.h"
 
@@ -252,7 +252,7 @@ static void redraw_scene(CUBE_STATE_T *state)
    glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
 
    glBindTexture(GL_TEXTURE_2D, state->tex[4]);
-   glRotatef(270, 0, 1, 0); // top face normal along y axis
+   glRotatef(-90, 0, 1, 0); // top face normal along y axis
    glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
 
    glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
@@ -317,6 +317,10 @@ static void init_textures(CUBE_STATE_T *state)
    // setup overall texture environment
    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
+
+   free(state->tex_buf1);
+   free(state->tex_buf2);
+   free(state->tex_buf3);
 }
 
 /***********************************************************
