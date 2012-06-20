@@ -295,13 +295,13 @@ static void init_textures(CUBE_STATE_T *state)
    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
 
-   state->tex[1] = state->tex[0] = init_texture(PATH "Lucca_128_128.raw", 128, 128);
-   state->tex[3] = state->tex[2] = init_texture(PATH "Djenne_128_128.raw", 128, 128);
-   state->tex[5] = state->tex[4] = init_texture(PATH "Gaudi_128_128.raw", 128, 128);
+   //state->tex[1] = state->tex[0] = init_texture(PATH "Lucca_128_128.raw", 128, 128);
+   //state->tex[3] = state->tex[2] = init_texture(PATH "Djenne_128_128.raw", 128, 128);
+   //state->tex[5] = state->tex[4] = init_texture(PATH "Gaudi_128_128.raw", 128, 128);
 
    int width, height;
-   state->tex[0] = png_texture_load("top.png", &width, &height);
-   printf("top.png: %dx%d\n", width, height);
+   state->tex[0] = png_texture_load("debug338x226.png", &width, &height);
+   printf("png: %dx%d\n", width, height);
 
    state->tex[1] = state->tex[2] = state->tex[3] = state->tex[4] = state->tex[5] = state->tex[0];
 }

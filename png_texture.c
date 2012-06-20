@@ -36,6 +36,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     png_infop info_ptr = png_create_info_struct(png_ptr);
     if (!info_ptr)
     {
+        fprintf(stderr, "error: png_create_info_struct returned 0.\n");
         png_destroy_read_struct(&png_ptr, (png_infopp)NULL, (png_infopp)NULL);
         fclose(fp);
         return 0;
@@ -45,6 +46,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     png_infop end_info = png_create_info_struct(png_ptr);
     if (!end_info)
     {
+        fprintf(stderr, "error: png_create_info_struct returned 0.\n");
         png_destroy_read_struct(&png_ptr, &info_ptr, (png_infopp) NULL);
         fclose(fp);
         return 0;
@@ -52,6 +54,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
 
     // the code in this if statement gets called if libpng encounters an error
     if (setjmp(png_jmpbuf(png_ptr))) {
+        fprintf(stderr, "error from libpng\n");
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         fclose(fp);
         return 0;
@@ -81,13 +84,19 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     png_read_update_info(png_ptr, info_ptr);
 
     // Row size in bytes.
-    int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
+    int rowbytes = png_get_rowbytes(png_ptr, info_ptr)+2; // tmphax fudge factor
+
+    // WHY DO I HAVE TO ADD A FUDGE FACTOR?
+    // PNG SIZE : fudging
+    // 339x226: need rowbytes+3
+    // 338x226: need rowbytes+2
 
     // Allocate the image_data as a big block, to be given to opengl
     png_byte * image_data;
-    image_data = malloc(rowbytes * temp_height * sizeof(png_byte));
+    image_data = malloc(rowbytes * temp_height * sizeof(png_byte)+15);
     if (image_data == NULL)
     {
+        fprintf(stderr, "error: could not allocate memory for PNG image data\n");
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         fclose(fp);
         return 0;
@@ -97,6 +106,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     png_bytep * row_pointers = malloc(temp_height * sizeof(png_bytep));
     if (row_pointers == NULL)
     {
+        fprintf(stderr, "error: could not allocate memory for PNG row pointers\n");
         png_destroy_read_struct(&png_ptr, &info_ptr, &end_info);
         free(image_data);
         fclose(fp);
@@ -107,9 +117,9 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     int i;
     for (i = 0; i < temp_height; i++)
     {
-        row_pointers[temp_height - 1 - i] = image_data + i * (rowbytes+3);
+        row_pointers[temp_height - 1 - i] = image_data + i * rowbytes;
     }
-    printf("width*3=%d, rowbytes=%d\n", temp_width*3, rowbytes);
+    printf("width*3=%ld, rowbytes=%d\n", temp_width*3, rowbytes);
 
     // read the png into image_data through row_pointers
     png_read_image(png_ptr, row_pointers);
