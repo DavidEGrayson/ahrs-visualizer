@@ -12,12 +12,14 @@
 #include "cube_texture_and_coords.h"
 #include "../png_texture.h"
 
+#define PATH "model_board/"
+
 static GLuint texture_top;
 
 void model_board_init(void)
 {
    int width, height;
-   texture_top = png_texture_load("top.png", &width, &height);
+   texture_top = png_texture_load(PATH "top.png", &width, &height);
 
    glEnableClientState(GL_VERTEX_ARRAY);
    glVertexPointer(3, GL_BYTE, 0, quadx);
