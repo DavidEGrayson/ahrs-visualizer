@@ -1,5 +1,3 @@
-// All the units are inch/10
-
 #define EX 9   // X dimension
 #define EY 6   // Y dimension
 #define EZ 1   // Thickness
