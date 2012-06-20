@@ -12,8 +12,6 @@
 #include "cube_texture_and_coords.h"
 #include "../png_texture.h"
 
-#define PATH "model_board/"
-
 static GLuint texture_top;
 
 void model_board_init(void)
