@@ -11,12 +11,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include "cube_texture_and_coords.h"
-#include "png_texture.h"
-
-#define PATH "./"
-
-#define IMAGE_SIZE 128
+#include "model_board/model_board.h"
 
 uint32_t screen_width, screen_height;
 EGLDisplay display;
@@ -25,8 +20,6 @@ EGLContext context;
 
 typedef struct
 {
-   GLuint tex[6];
-
    // model rotation vector and direction
    GLfloat rot_angle_x_inc, rot_angle_y_inc, rot_angle_z_inc;
 
@@ -47,7 +40,6 @@ static void update_model(CUBE_STATE_T *state);
 static void init_textures(CUBE_STATE_T *state);
 static void exit_func(void);
 static CUBE_STATE_T _state, *state=&_state;
-
 
 // Sets the display, OpenGL|ES context and screen stuff
 static void init_ogl()
@@ -145,12 +137,6 @@ static void init_model_proj(CUBE_STATE_T *state)
 
    glFrustumf(-hwd, hwd, -hht, hht, nearp, farp);
 
-   glEnableClientState(GL_VERTEX_ARRAY);
-   glVertexPointer(3, GL_BYTE, 0, quadx);
-
-   glEnableClientState( GL_COLOR_ARRAY );
-   glColorPointer(4, GL_FLOAT, 0, colorsf);
-
    reset_model(state);
 }
 
@@ -207,103 +193,22 @@ static void redraw_scene(CUBE_STATE_T *state)
    glClear(GL_COLOR_BUFFER_BIT);
 
    glMatrixMode(GL_MODELVIEW);
-   glLoadIdentity();
-   // move camera back to see the cube
-   glTranslatef(0, 0, -state->distance);
 
+   // Draw the board
+   glLoadIdentity();
+   glTranslatef(0, 0, -state->distance);
    glRotatef(state->rot_angle_x, 1, 0, 0);
    glRotatef(state->rot_angle_y, 0, 1, 0);
    glRotatef(state->rot_angle_z, 0, 0, 1);
-
-   glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
-
-   // Draw first (front) face:
-   // Bind texture surface to current vertices
-   glBindTexture(GL_TEXTURE_2D, state->tex[0]);
-
-   // Need to rotate textures - do this by rotating each cube face
-   glRotatef(270, 0, 0, 1); // front face normal along z axis
-
-   // draw first 4 vertices
-   glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
-
-   // same pattern for other 5 faces - rotation chosen to make image orientation 'nice'
-   glBindTexture(GL_TEXTURE_2D, state->tex[1]);
-   glRotatef(90, 0, 0, 1); // back face normal along z axis
-   glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-
-   glBindTexture(GL_TEXTURE_2D, state->tex[2]);
-   glRotatef(90, 1, 0, 0); // left face normal along x axis
-   glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
-
-   glBindTexture(GL_TEXTURE_2D, state->tex[3]);
-   glRotatef(90, 1, 0, 0); // right face normal along x axis
-   glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-
-   glBindTexture(GL_TEXTURE_2D, state->tex[4]);
-   glRotatef(-90, 0, 1, 0); // top face normal along y axis
-   glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
-
-   glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-   glBindTexture(GL_TEXTURE_2D, state->tex[5]);
-   glRotatef(90, 0, 1, 0); // bottom face normal along y axis
-   glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
+   model_board_redraw();
 
    eglSwapBuffers(display, surface);
-}
-
-static GLuint init_texture(const char * file_name, int width, int height)
-{
-   int size = width*height*3;
-   unsigned char * data = malloc(size);
-   if (data == 0)
-   {
-      fprintf(stderr, "Unable to allocate %d bytes for %s texture.\n", size, file_name);
-      exit(2);
-   }
-
-   FILE * file = fopen(file_name, "rb");
-   if (file == 0)
-   {
-      perror(file_name);
-      exit(3);
-   }
-
-   size_t bytes_read = fread(data, 1, size, file);
-   fclose(file);
-   if (bytes_read != size)
-   {
-      fprintf(stderr, "Expected to read %d bytes from %s but read %d.\n", size, file_name, bytes_read);
-      free(data);
-      exit(4);
-   }
-
-   GLuint texture;
-   glGenTextures(1, &texture);
-   glBindTexture(GL_TEXTURE_2D, texture);
-   glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-   glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-   free(data);
-   return texture;
 }
 
 static void init_textures(CUBE_STATE_T *state)
 {
    glEnable(GL_TEXTURE_2D);
-   glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
-   glEnableClientState(GL_TEXTURE_COORD_ARRAY);
-
-   //state->tex[1] = state->tex[0] = init_texture(PATH "Lucca_128_128.raw", 128, 128);
-   //state->tex[3] = state->tex[2] = init_texture(PATH "Djenne_128_128.raw", 128, 128);
-   //state->tex[5] = state->tex[4] = init_texture(PATH "Gaudi_128_128.raw", 128, 128);
-
-   int width, height;
-   state->tex[0] = png_texture_load("top.png", &width, &height);
-   printf("png: %dx%d\n", width, height);
-
-   state->tex[1] = state->tex[2] = state->tex[3] = state->tex[4] = state->tex[5] = state->tex[0];
+   model_board_init();
 }
 
 static void exit_func(void)

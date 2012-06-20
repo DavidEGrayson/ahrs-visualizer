@@ -1,4 +1,4 @@
-OBJS=$(patsubst %.c, %.o, $(wildcard *.c))
+OBJS=$(patsubst %.c, %.o, $(wildcard *.c)) model_board/model_board.o
 BIN=ahrs
 
 CFLAGS+=-DSTANDALONE -D__STDC_CONSTANT_MACROS -D__STDC_LIMIT_MACROS
