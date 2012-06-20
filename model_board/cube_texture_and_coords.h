@@ -1,48 +1,52 @@
-#define EZ 1
+// All the units are inch/10
+
+#define EX 9   // X dimension
+#define EY 6   // Y dimension
+#define EZ 1   // Thickness
 
 static const GLbyte quadx[6*4*3] = {
-   /* FRONT */
-   -10, -10,  EZ,
-   10, -10,  EZ,
-   -10,  10,  EZ,
-   10,  10,  EZ,
-
-   /* BACK */
-   -10, -10, -EZ,
-   -10,  10, -EZ,
-   10, -10, -EZ,
-   10,  10, -EZ,
-
-   /* LEFT */
-   -10, -10,  EZ,
-   -10,  10,  EZ,
-   -10, -10, -EZ,
-   -10,  10, -EZ,
-
-   /* RIGHT */
-   10, -10, -EZ,
-   10,  10, -EZ,
-   10, -10,  EZ,
-   10,  10,  EZ,
-
    /* TOP */
-   -10,  10,  EZ,
-   10,  10,  EZ,
-   -10,  10, -EZ,
-   10,  10, -EZ,
+   -EX, -EY,  EZ,
+    EX, -EY,  EZ,
+   -EX,  EY,  EZ,
+    EX,  EY,  EZ,
 
    /* BOTTOM */
-   -10, -10,  EZ,
-   -10, -10, -EZ,
-   10, -10,  EZ,
-   10, -10, -EZ,
+   -EX, -EY,   0,
+   -EX,  EY,   0,
+    EX, -EY,   0,
+    EX,  EY,   0,
+
+   /* LEFT EDGE */
+   -EX, -EY,  EZ,
+   -EX,  EY,  EZ,
+   -EX, -EY,   0,
+   -EX,  EY,   0,
+
+   /* RIGHT EDGE */
+   EX, -EY,   0,
+   EX,  EY,   0,
+   EX, -EY,  EZ,
+   EX,  EY,  EZ,
+
+   /* FAR EDGE */
+   -EX,  EY,  EZ,
+    EX,  EY,  EZ,
+   -EX,  EY,   0,
+    EX,  EY,   0,
+
+   /* CLOSE EDGE */
+   -EX, -EY,  EZ,
+   -EX, -EY,   0,
+    EX, -EY,  EZ,
+    EX, -EY,   0,
 };
 
 /** Texture coordinates for the quad. */
 static const GLfloat texCoords[6 * 4 * 2] = {
    0.f,  0.f,
-   0.f,  1.f,
    1.f,  0.f,
+   0.f,  1.f,
    1.f,  1.f,
 
    0.f,  0.f,

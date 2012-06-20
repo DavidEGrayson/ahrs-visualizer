@@ -142,13 +142,13 @@ static void init_model_proj(CUBE_STATE_T *state)
 
 static void reset_model(CUBE_STATE_T *state)
 {
-   state->rot_angle_x = -80.f;
+   state->rot_angle_x = -70.f;
    state->rot_angle_y = 0.f;
    state->rot_angle_z = 0.0f;
    state->rot_angle_x_inc = 0.0f;
-   state->rot_angle_y_inc = 0.0f;
+   state->rot_angle_y_inc = 0.1f;
    state->rot_angle_z_inc = 0.7f;
-   state->distance = 60.0f;
+   state->distance = 30.0f;
 }
 
 // Updates model variables to current position/rotation

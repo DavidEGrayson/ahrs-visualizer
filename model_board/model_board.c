@@ -33,24 +33,15 @@ void model_board_redraw(void)
 {
    glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
+   // Top
    glBindTexture(GL_TEXTURE_2D, texture_top);
    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
    // same pattern for other 5 faces - rotation chosen to make image orientation 'nice'
-   glBindTexture(GL_TEXTURE_2D, 0);
+   //glBindTexture(GL_TEXTURE_2D, 0);
    glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
-
-   glBindTexture(GL_TEXTURE_2D, texture_top);
    glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
-
-   glBindTexture(GL_TEXTURE_2D, texture_top);
    glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
-
-   glBindTexture(GL_TEXTURE_2D, texture_top);
    glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
-
-   glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE);
-
-   glBindTexture(GL_TEXTURE_2D, texture_top);
    glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
 }
