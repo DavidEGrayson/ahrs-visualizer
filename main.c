@@ -300,7 +300,7 @@ static void init_textures(CUBE_STATE_T *state)
    //state->tex[5] = state->tex[4] = init_texture(PATH "Gaudi_128_128.raw", 128, 128);
 
    int width, height;
-   state->tex[0] = png_texture_load("debug338x226.png", &width, &height);
+   state->tex[0] = png_texture_load("top.png", &width, &height);
    printf("png: %dx%d\n", width, height);
 
    state->tex[1] = state->tex[2] = state->tex[3] = state->tex[4] = state->tex[5] = state->tex[0];
@@ -321,6 +321,8 @@ static void exit_func(void)
 
 int main()
 {
+   printf("Starting...\n");
+
    bcm_host_init();
 
    // Start OGLES

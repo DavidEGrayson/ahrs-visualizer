@@ -11,7 +11,7 @@ CFLAGS+=-ftree-vectorize -pipe -DUSE_EXTERNAL_OMX
 CFLAGS+=-DHAVE_LIBBCM_HOST -DUSE_EXTERNAL_LIBBCM_HOST -DUSE_VCHIQ_ARM -Wno-psabi
 
 LDFLAGS+=-L/opt/vc/lib/ -lGLESv2 -lEGL -lopenmaxil -lbcm_host -lvcos -lvchiq_arm
-LDFLAGS+=`libpng-config --libs`
+LDFLAGS+=$(shell libpng-config --libs)
 LDFLAGS+=/opt/vc/src/hello_pi/libs/ilclient/libilclient.a
 
 INCLUDES+=-I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads
