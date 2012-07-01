@@ -262,7 +262,7 @@ static void read_input(void)
             break;
         }
 
-        fprintf(stderr, "error: Only read %d items.\n", result);
+        fprintf(stderr, "unrecognized input: only regonized %d items.\n", result);
     }
 }
 
