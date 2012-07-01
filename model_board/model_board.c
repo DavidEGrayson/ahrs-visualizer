@@ -20,7 +20,7 @@ void model_board_init(void)
    texture_top = png_texture_load(PATH "top.png", &width, &height);
 
    glEnableClientState(GL_VERTEX_ARRAY);
-   glVertexPointer(3, GL_BYTE, 0, vertices);
+   glVertexPointer(3, GL_FLOAT, 0, vertices);
 
    glEnableClientState(GL_COLOR_ARRAY);
    glColorPointer(4, GL_FLOAT, 0, colors);

@@ -4,7 +4,7 @@
 
 #define AL 10  // axes length
 
-static const GLbyte vertices[] = {
+static GLfloat vertices[] = {
    /* TOP */
    -EX, -EY,  EZ,
     EX, -EY,  EZ,
@@ -51,11 +51,11 @@ static const GLbyte vertices[] = {
 
    /* Z AXIS */
     0,  0,  0,
-    0,  0, AL,
+    0,  0, AL,   
 };
 
 /** Texture coordinates for the quad. */
-static const GLfloat texCoords[] = {
+static GLfloat texCoords[] = {
    0.f,  0.f,
    1.f,  0.f,
    0.f,  1.f,

@@ -183,7 +183,9 @@ static void read_input(void)
 
     while(1)
     {
-        // Read the rotation matrix from the standard input, transposing it.
+        // Read the rotation matrix from the standard input.
+        // The input values are ROW-major but we need to make a
+        // COLUMN-major matrix for OpenGL.
         int result = scanf("%f %f %f %f %f %f %f %f %f",
                            &matrix[0][0], &matrix[1][0], &matrix[2][0],
                            &matrix[0][1], &matrix[1][1], &matrix[2][1],
