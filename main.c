@@ -236,10 +236,10 @@ static void exit_func(void)
    eglTerminate(display);
 }
 
-/* The matrix expected on the stnadrd input is a 
+/* The matrix expected on the standrd input is a 
  * ROW-major matrix that converts a vector from board coordinates
  * to ground coordinates. */
-static void read_matrix(void)
+static void read_input(void)
 {
     // Set the translation part to be the identity.
     matrix[3][0] = matrix[3][1] = matrix[3][2] = 0;
@@ -249,12 +249,15 @@ static void read_matrix(void)
     while(1)
     {
         // Read the rotation matrix from the standard input, transposing it.
-        int result = scanf("%f %f %f %f %f %f %f %f %f\n",
+        int result = scanf("%f %f %f %f %f %f %f %f %f",
                            &matrix[0][0], &matrix[1][0], &matrix[2][0],
                            &matrix[0][1], &matrix[1][1], &matrix[2][1],
                            &matrix[0][2], &matrix[1][2], &matrix[2][2]);
 
-        if (result == 9)
+        // Read to the end of the line so that we don't get stuck forever on one invalid line.
+        while(getc(stdin) != '\n');
+
+        if (result >= 9)
         {
             break;
         }
@@ -280,7 +283,7 @@ int main()
 
     while(1)
     {
-        read_matrix();
+        read_input();
         update_model(state);
         redraw_scene(state);
     }
