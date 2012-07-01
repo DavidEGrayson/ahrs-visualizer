@@ -238,10 +238,7 @@ static void exit_func(void)
 
 /* The matrix expected on the stnadrd input is a 
  * ROW-major matrix that converts a vector from board coordinates
- * to ground coordinates.
- * We actually want to convert the other way, so we will simply
- * interpret it as a column major matrix, which transposes and
- * hence inverts it. **/
+ * to ground coordinates. */
 static void read_matrix(void)
 {
     // Set the translation part to be the identity.
@@ -249,14 +246,14 @@ static void read_matrix(void)
     matrix[0][3] = matrix[1][3] = matrix[2][3] = 0;
     matrix[3][3] = 1;
 
-    int result;
     while(1)
     {
         // Read the rotation matrix from the standard input, transposing it.
         int result = scanf("%f %f %f %f %f %f %f %f %f\n",
-                           &matrix[0][0], &matrix[0][1], &matrix[0][2],
-                           &matrix[1][0], &matrix[1][1], &matrix[1][2],
-                           &matrix[2][0], &matrix[2][1], &matrix[2][2]);
+                           &matrix[0][0], &matrix[1][0], &matrix[2][0],
+                           &matrix[0][1], &matrix[1][1], &matrix[2][1],
+                           &matrix[0][2], &matrix[1][2], &matrix[2][2]);
+
         if (result == 9)
         {
             break;

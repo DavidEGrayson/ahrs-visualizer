@@ -117,7 +117,6 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     {
         row_pointers[temp_height - 1 - i] = image_data + i * rowbytes;
     }
-    printf("width*3=%ld, rowbytes=%d\n", temp_width*3, rowbytes);
 
     // read the png into image_data through row_pointers
     png_read_image(png_ptr, row_pointers);
