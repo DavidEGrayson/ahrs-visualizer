@@ -9,7 +9,7 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include "cube_texture_and_coords.h"
+#include "data.h"
 #include "../png_texture.h"
 
 static GLuint texture_top;
