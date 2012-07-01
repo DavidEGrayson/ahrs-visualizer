@@ -51,87 +51,106 @@ static GLfloat vertices[] = {
 
    /* Z AXIS */
     0,  0,  0,
-    0,  0, AL,   
+    0,  0, AL,
+
+   // Acceleration
+   0, 0, 0,
+   0, 0, 0,
+
+   // Magnetic field
+   0, 0, 0,
+   0, 0, 0,
 };
 
 /** Texture coordinates for the quad. */
 static GLfloat texCoords[] = {
-   0.f,  0.f,
-   1.f,  0.f,
-   0.f,  1.f,
-   1.f,  1.f,
+   0,  0,
+   1,  0,
+   0,  1,
+   1,  1,
 
-   0.f,  0.f,
-   0.f,  1.f,
-   1.f,  0.f,
-   1.f,  1.f,
+   0,  0,
+   0,  1,
+   1,  0,
+   1,  1,
 
-   0.f,  0.f,
-   0.f,  1.f,
-   1.f,  0.f,
-   1.f,  1.f,
+   0,  0,
+   0,  1,
+   1,  0,
+   1,  1,
 
-   0.f,  0.f,
-   0.f,  1.f,
-   1.f,  0.f,
-   1.f,  1.f,
+   0,  0,
+   0,  1,
+   1,  0,
+   1,  1,
 
-   0.f,  0.f,
-   0.f,  1.f,
-   1.f,  0.f,
-   1.f,  1.f,
+   0,  0,
+   0,  1,
+   1,  0,
+   1,  1,
 
-   0.f,  0.f,
-   0.f,  1.f,
-   1.f,  0.f,
-   1.f,  1.f,
+   0,  0,
+   0,  1,
+   1,  0,
+   1,  1,
 
-   // x,y,z axis: hopefully ignored
-   0,0, 0,0, 0,0,
-   0,0, 0,0, 0,0,
+   // These objects don't use textures:
+   0,0, 0,0, // x axis
+   0,0, 0,0, // y axis
+   0,0, 0,0, // z axis
+   0,0, 0,0, // acceleration line
+   0,0, 0,0, // magnetic field lines
 };
 
 
 static const GLfloat colors[] = {
-   1.f,  0.f,  0.f,  1.f,  //red
-   1.f,  0.f,  0.f,  1.f,
-   1.f,  0.f,  0.f,  1.f,
-   1.f,  0.f,  0.f,  1.f,
+   1,  0,  0,  1,  //red
+   1,  0,  0,  1,
+   1,  0,  0,  1,
+   1,  0,  0,  1,
 
-   0.f,  1.f,  0.f,  1.f,  // blue
-   0.f,  1.f,  0.f,  1.f,
-   0.f,  1.f,  0.f,  1.f,
-   0.f,  1.f,  0.f,  1.f,
+   0,  1,  0,  1,  // blue
+   0,  1,  0,  1,
+   0,  1,  0,  1,
+   0,  1,  0,  1,
 
-   0.f,  0.f,  1.f,  1.f, // green
-   0.f,  0.f,  1.f,  1.f,
-   0.f,  0.f,  1.f,  1.f,
-   0.f,  0.f,  1.f,  1.f,
+   0,  0,  1,  1, // green
+   0,  0,  1,  1,
+   0,  0,  1,  1,
+   0,  0,  1,  1,
 
-   0.f, 0.5f, 0.5f,  1.f, // teal
-   0.f, 0.5f, 0.5f,  1.f,
-   0.f, 0.5f, 0.5f,  1.f,
-   0.f, 0.5f, 0.5f,  1.f,
+   0, 0.5, 0.5,  1, // teal
+   0, 0.5, 0.5,  1,
+   0, 0.5, 0.5,  1,
+   0, 0.5, 0.5,  1,
 
-   0.5f, 0.5f,  0.f,  1.f, // yellow
-   0.5f, 0.5f,  0.f,  1.f,
-   0.5f, 0.5f,  0.f,  1.f,
-   0.5f, 0.5f,  0.f,  1.f,
+   0.5, 0.5,  0,  1, // yellow
+   0.5, 0.5,  0,  1,
+   0.5, 0.5,  0,  1,
+   0.5, 0.5,  0,  1,
 
-   0.5f,  0.f, 0.5f,  1.f, // purple
-   0.5f,  0.f, 0.5f,  1.f,
-   0.5f,  0.f, 0.5f,  1.f,
-   0.5f,  0.f, 0.5f,  1.f,
+   0.5,  0, 0.5,  1, // purple
+   0.5,  0, 0.5,  1,
+   0.5,  0, 0.5,  1,
+   0.5,  0, 0.5,  1,
 
-   // red for X axis
+   // X axis: red
    1, 0, 0, 1,
    1, 0, 0, 1,
 
-   // green for Y axis
+   // Y axis: green
    0, 1, 0, 1,
    0, 1, 0, 1,
    
-   // blue for Z axis
+   // Z axis: blue
    0, 0, 1, 1,
    0, 0, 1, 1,
+
+   // Acceleration: cyan
+   0, 1, 1, 0.3,
+   0, 1, 1, 1,
+
+   // Magnetic field: yellow
+   1, 1, 0, 0.3,
+   1, 1, 0, 1,
 };

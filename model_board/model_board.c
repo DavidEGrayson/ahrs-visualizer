@@ -44,9 +44,22 @@ void model_board_redraw(float * acceleration, float * magnetic_field)
    glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
    glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
 
+   glBindTexture(GL_TEXTURE_2D, 0);  // Turn off textures
+
    // X, Y, Z axes
-   glBindTexture(GL_TEXTURE_2D, 0);
    glDrawArrays(GL_LINES, 24, 2);
    glDrawArrays(GL_LINES, 26, 2);
    glDrawArrays(GL_LINES, 28, 2);
+
+   // Acceleration
+   vertices[3*31+0] = acceleration[0];
+   vertices[3*31+1] = acceleration[1];
+   vertices[3*31+2] = acceleration[2];
+   glDrawArrays(GL_LINES, 30, 2);
+
+   // Magnetic field
+   vertices[3*33+0] = magnetic_field[0];
+   vertices[3*33+1] = magnetic_field[1];
+   vertices[3*33+2] = magnetic_field[2];
+   glDrawArrays(GL_LINES, 32, 2);
 }

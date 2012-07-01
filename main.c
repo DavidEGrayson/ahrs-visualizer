@@ -186,10 +186,12 @@ static void read_input(void)
         // Read the rotation matrix from the standard input.
         // The input values are ROW-major but we need to make a
         // COLUMN-major matrix for OpenGL.
-        int result = scanf("%f %f %f %f %f %f %f %f %f",
+        int result = scanf("%f %f %f %f %f %f %f %f %f %f %f %f %f %f %f",
                            &matrix[0][0], &matrix[1][0], &matrix[2][0],
                            &matrix[0][1], &matrix[1][1], &matrix[2][1],
-                           &matrix[0][2], &matrix[1][2], &matrix[2][2]);
+                           &matrix[0][2], &matrix[1][2], &matrix[2][2],
+                           &acceleration[0], &acceleration[1], &acceleration[2],
+                           &magnetic_field[0], &magnetic_field[1], &magnetic_field[2]);
 
         // Read to the end of the line so that we don't get stuck forever on one invalid line.
         while(getc(stdin) != '\n');

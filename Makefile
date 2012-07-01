@@ -1,3 +1,5 @@
+# TODO: add dependency tracking to this Makefile
+
 OBJS=$(patsubst %.c, %.o, $(wildcard *.c)) model_board/model_board.o
 BIN=ahrs
 
