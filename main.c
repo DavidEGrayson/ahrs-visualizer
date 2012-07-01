@@ -37,7 +37,6 @@ static void reset_model(CUBE_STATE_T *state);
 static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc);
 static void redraw_scene(CUBE_STATE_T *state);
 static void update_model(CUBE_STATE_T *state);
-static void init_textures(CUBE_STATE_T *state);
 static void exit_func(void);
 static CUBE_STATE_T _state, *state=&_state;
 
@@ -146,7 +145,7 @@ static void reset_model(CUBE_STATE_T *state)
    state->rot_angle_y = 0.f;
    state->rot_angle_z = 0.0f;
    state->rot_angle_x_inc = 0.0f;
-   state->rot_angle_y_inc = 0.1f;
+   state->rot_angle_y_inc = 0.0f;
    state->rot_angle_z_inc = 0.7f;
    state->distance = 30.0f;
 }
@@ -181,6 +180,11 @@ static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc)
    return angle;
 }
 
+/* OpenGL rotation matrix that converts ground coordinates
+ * (x=easy, y=north, z=up) into board coordinates.  It is
+ * column-major so do matrix[COL][ROW]. */
+float matrix[4][4];
+
 /***********************************************************
  *       CUBE_STATE_T *state - holds OGLES model info
  *
@@ -197,15 +201,23 @@ static void redraw_scene(CUBE_STATE_T *state)
    // Draw the board
    glLoadIdentity();
    glTranslatef(0, 0, -state->distance);
-   glRotatef(state->rot_angle_x, 1, 0, 0);
-   glRotatef(state->rot_angle_y, 0, 1, 0);
-   glRotatef(state->rot_angle_z, 0, 0, 1);
+
+   // 0 = Screen faces south, 90 = West, 180 = North, 270 = East
+   float screen_orientation = 0;
+
+   // Convert screen coords (x=right y=up z=out) to ground coords (x=east y=north z=up).
+   glRotatef(-90, 1, 0, 0);
+   glRotatef(screen_orientation, 0, 0, 1);
+
+   // Convert ground coords to IMU coords.
+   glMultMatrixf(matrix[0]);
+
    model_board_redraw();
 
    eglSwapBuffers(display, surface);
 }
 
-static void init_textures(CUBE_STATE_T *state)
+static void init_textures(void)
 {
    glEnable(GL_TEXTURE_2D);
    model_board_init();
@@ -224,28 +236,56 @@ static void exit_func(void)
    eglTerminate(display);
 }
 
+/* The matrix expected on the stnadrd input is a 
+ * ROW-major matrix that converts a vector from board coordinates
+ * to ground coordinates.
+ * We actually want to convert the other way, so we will simply
+ * interpret it as a column major matrix, which transposes and
+ * hence inverts it. **/
+static void read_matrix(void)
+{
+    matrix[3][0] = matrix[3][1] = matrix[3][2] = 0;
+    matrix[0][3] = matrix[1][3] = matrix[2][3] = 0;
+    matrix[3][3] = 1;
+
+    int result;
+    while(1)
+    {
+        int result = scanf("%f %f %f %f %f %f %f %f %f\n",
+                           &matrix[0][0], &matrix[0][1], &matrix[0][2],
+                           &matrix[1][0], &matrix[1][1], &matrix[1][2],
+                           &matrix[2][0], &matrix[2][1], &matrix[2][2]);
+        if (result == 9)
+        {
+            break;
+        }
+
+        fprintf(stderr, "error: Only read %d items.\n", result);
+    }
+}
+
 int main()
 {
-   printf("Starting...\n");
+    printf("Starting...\n");
 
-   bcm_host_init();
+    bcm_host_init();
 
-   // Start OGLES
-   init_ogl();
+    // Start OGLES
+    init_ogl();
 
-   // Setup the model world
-   init_model_proj(state);
+    // Setup the model world
+    init_model_proj(state);
 
-   // initialise the OGLES texture(s)
-   init_textures(state);
+    // initialise the OGLES texture(s)
+    init_textures();
 
-   while(1)
-   {
-      usleep(15*1000);
-      update_model(state);
-      redraw_scene(state);
-   }
-   exit_func();
-   return 0;
+    while(1)
+    {
+        read_matrix();
+        update_model(state);
+        redraw_scene(state);
+    }
+    exit_func();
+    return 0;
 }
 
