@@ -20,10 +20,10 @@ void model_board_init(void)
    texture_top = png_texture_load(PATH "top.png", &width, &height);
 
    glEnableClientState(GL_VERTEX_ARRAY);
-   glVertexPointer(3, GL_BYTE, 0, quadx);
+   glVertexPointer(3, GL_BYTE, 0, vertices);
 
    glEnableClientState( GL_COLOR_ARRAY );
-   glColorPointer(4, GL_FLOAT, 0, colorsf);
+   glColorPointer(4, GL_FLOAT, 0, colors);
 
    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
    glEnableClientState(GL_TEXTURE_COORD_ARRAY);
@@ -37,11 +37,15 @@ void model_board_redraw(void)
    glBindTexture(GL_TEXTURE_2D, texture_top);
    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 
-   // same pattern for other 5 faces - rotation chosen to make image orientation 'nice'
-   //glBindTexture(GL_TEXTURE_2D, 0);
+   // others
    glDrawArrays(GL_TRIANGLE_STRIP, 4, 4);
    glDrawArrays(GL_TRIANGLE_STRIP, 8, 4);
    glDrawArrays(GL_TRIANGLE_STRIP, 12, 4);
    glDrawArrays(GL_TRIANGLE_STRIP, 16, 4);
    glDrawArrays(GL_TRIANGLE_STRIP, 20, 4);
+
+   // X, Y, Z axes
+   glDrawArrays(GL_LINES, 24, 2);
+   glDrawArrays(GL_LINES, 26, 2);
+   glDrawArrays(GL_LINES, 28, 2);
 }

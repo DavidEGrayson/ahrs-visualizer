@@ -2,7 +2,9 @@
 #define EY 6   // Y dimension
 #define EZ 1   // Thickness
 
-static const GLbyte quadx[6*4*3] = {
+#define AL 10  // axes length
+
+static const GLbyte vertices[] = {
    /* TOP */
    -EX, -EY,  EZ,
     EX, -EY,  EZ,
@@ -38,10 +40,22 @@ static const GLbyte quadx[6*4*3] = {
    -EX, -EY,   0,
     EX, -EY,  EZ,
     EX, -EY,   0,
+
+   /* X AXIS */
+    0,  0,  0,
+   AL,  0,  0,
+
+   /* Y AXIS */
+    0,  0,  0,
+    0, AL,  0,
+
+   /* Z AXIS */
+    0,  0,  0,
+    0,  0, AL,
 };
 
 /** Texture coordinates for the quad. */
-static const GLfloat texCoords[6 * 4 * 2] = {
+static const GLfloat texCoords[] = {
    0.f,  0.f,
    1.f,  0.f,
    0.f,  1.f,
@@ -70,14 +84,15 @@ static const GLfloat texCoords[6 * 4 * 2] = {
    0.f,  0.f,
    0.f,  1.f,
    1.f,  0.f,
-   1.f,  1.f
+   1.f,  1.f,
+
+   // x,y,z axis: hopefully ignored
+   0,0, 0,0, 0,0,
+   0,0, 0,0, 0,0,
 };
 
-// Colors are invisible when textures appear on all 6 faces.
-// If textures are disabled, e.g. by commenting out glEnable(GL_TEXTURE_2D),
-// the colours will appear.
 
-static const GLfloat colorsf[6*4*4] = {
+static const GLfloat colors[] = {
    1.f,  0.f,  0.f,  1.f,  //red
    1.f,  0.f,  0.f,  1.f,
    1.f,  0.f,  0.f,  1.f,
@@ -106,5 +121,17 @@ static const GLfloat colorsf[6*4*4] = {
    0.5f,  0.f, 0.5f,  1.f, // purple
    0.5f,  0.f, 0.5f,  1.f,
    0.5f,  0.f, 0.5f,  1.f,
-   0.5f,  0.f, 0.5f,  1.f
+   0.5f,  0.f, 0.5f,  1.f,
+
+   // red for X axis
+   1, 0, 0, 1,
+   1, 0, 0, 1,
+
+   // green for Y axis
+   0, 1, 0, 1,
+   0, 1, 0, 1,
+   
+   // blue for Z axis
+   0, 0, 1, 1,
+   0, 0, 1, 1,
 };

@@ -244,6 +244,7 @@ static void exit_func(void)
  * hence inverts it. **/
 static void read_matrix(void)
 {
+    // Set the translation part to be the identity.
     matrix[3][0] = matrix[3][1] = matrix[3][2] = 0;
     matrix[0][3] = matrix[1][3] = matrix[2][3] = 0;
     matrix[3][3] = 1;
@@ -251,6 +252,7 @@ static void read_matrix(void)
     int result;
     while(1)
     {
+        // Read the rotation matrix from the standard input, transposing it.
         int result = scanf("%f %f %f %f %f %f %f %f %f\n",
                            &matrix[0][0], &matrix[0][1], &matrix[0][2],
                            &matrix[1][0], &matrix[1][1], &matrix[1][2],
