@@ -29,7 +29,7 @@ void model_board_init(void)
    glTexCoordPointer(2, GL_FLOAT, 0, texCoords);
 }
 
-void model_board_redraw(void)
+void model_board_redraw(float * acceleration, float * magnetic_field)
 {
    glTexEnvx(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 

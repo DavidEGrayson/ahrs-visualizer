@@ -13,35 +13,28 @@
 
 #include "model_board/model_board.h"
 
+/* OpenGL rotation matrix that converts ground coordinates
+ * (x=easy, y=north, z=up) into board coordinates.  It is
+ * column-major so do matrix[COL][ROW]. */
+float matrix[4][4];
+
+// Acceleration vector in units of g (9.8 m/s^2).
+float acceleration[3];
+
+// Magnetic field vector where each component is approximately between -1 and 1.
+float magnetic_field[3];
+
+// 0 = Screen faces south, 90 = West, 180 = North, 270 = East
+// TODO: read screen_orientation from environment
+float screen_orientation = 0;
+
 uint32_t screen_width, screen_height;
 EGLDisplay display;
 EGLSurface surface;
 EGLContext context;
 
-typedef struct
-{
-   // model rotation vector and direction
-   GLfloat rot_angle_x_inc, rot_angle_y_inc, rot_angle_z_inc;
-
-   // current model rotation angles
-   GLfloat rot_angle_x, rot_angle_y, rot_angle_z;
-
-   // current distance from camera
-   GLfloat distance;
-
-} CUBE_STATE_T;
-
-static void init_ogl();
-static void init_model_proj(CUBE_STATE_T *state);
-static void reset_model(CUBE_STATE_T *state);
-static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc);
-static void redraw_scene(CUBE_STATE_T *state);
-static void update_model(CUBE_STATE_T *state);
-static void exit_func(void);
-static CUBE_STATE_T _state, *state=&_state;
-
 // Sets the display, OpenGL|ES context and screen stuff
-static void init_ogl()
+static void init_opengl(void)
 {
    EGLBoolean result;
    EGLint num_config;
@@ -120,7 +113,7 @@ static void init_ogl()
 }
 
 // Description: Sets the OpenGL|ES model to default values
-static void init_model_proj(CUBE_STATE_T *state)
+static void init_projection()
 {
    float nearp = 1, farp = 500.0f, hht, hwd;
 
@@ -135,92 +128,34 @@ static void init_model_proj(CUBE_STATE_T *state)
    hwd = hht * screen_width / screen_height;
 
    glFrustumf(-hwd, hwd, -hht, hht, nearp, farp);
-
-   reset_model(state);
-}
-
-static void reset_model(CUBE_STATE_T *state)
-{
-   state->rot_angle_x = -70.f;
-   state->rot_angle_y = 0.f;
-   state->rot_angle_z = 0.0f;
-   state->rot_angle_x_inc = 0.0f;
-   state->rot_angle_y_inc = 0.0f;
-   state->rot_angle_z_inc = 0.7f;
-   state->distance = 30.0f;
-}
-
-// Updates model variables to current position/rotation
-static void update_model(CUBE_STATE_T *state)
-{
-   state->rot_angle_x = inc_and_wrap_angle(state->rot_angle_x, state->rot_angle_x_inc);
-   state->rot_angle_y = inc_and_wrap_angle(state->rot_angle_y, state->rot_angle_y_inc);
-   state->rot_angle_z = inc_and_wrap_angle(state->rot_angle_z, state->rot_angle_z_inc);
-}
-
-/***********************************************************
- * Arguments:
- *       GLfloat angle     current angle
- *       GLfloat angle_inc angle increment
- *
- * Description:   Increments or decrements angle by angle_inc degrees
- *                Wraps to 0 at 360 deg.
- *
- * Returns: new value of angle
- ***********************************************************/
-static GLfloat inc_and_wrap_angle(GLfloat angle, GLfloat angle_inc)
-{
-   angle += angle_inc;
-
-   if (angle >= 360)
-      angle -= 360;
-   else if (angle <= 0)
-      angle += 360;
-
-   return angle;
-}
-
-/* OpenGL rotation matrix that converts ground coordinates
- * (x=easy, y=north, z=up) into board coordinates.  It is
- * column-major so do matrix[COL][ROW]. */
-float matrix[4][4];
-
-/***********************************************************
- *       CUBE_STATE_T *state - holds OGLES model info
- *
- * Description:   Draws the model and calls eglSwapBuffers
- *                to render to screen
- ***********************************************************/
-static void redraw_scene(CUBE_STATE_T *state)
-{
-   // Start with a clear screen
-   glClear(GL_COLOR_BUFFER_BIT);
-
-   glMatrixMode(GL_MODELVIEW);
-
-   // Draw the board
-   glLoadIdentity();
-   glTranslatef(0, 0, -state->distance);
-
-   // 0 = Screen faces south, 90 = West, 180 = North, 270 = East
-   float screen_orientation = 0;
-
-   // Convert screen coords (x=right y=up z=out) to ground coords (x=east y=north z=up).
-   glRotatef(-90, 1, 0, 0);
-   glRotatef(screen_orientation, 0, 0, 1);
-
-   // Convert ground coords to IMU coords.
-   glMultMatrixf(matrix[0]);
-
-   model_board_redraw();
-
-   eglSwapBuffers(display, surface);
 }
 
 static void init_textures(void)
 {
    glEnable(GL_TEXTURE_2D);
    model_board_init();
+}
+
+static void redraw_scene()
+{
+   // Start with a clear screen
+   glClear(GL_COLOR_BUFFER_BIT);
+
+   // Move the camera back so we can see the board.
+   glMatrixMode(GL_MODELVIEW);
+   glLoadIdentity();
+   glTranslatef(0, 0, -30);
+
+   // Convert screen coords (x=right y=up z=out) to ground coords (x=east y=north z=up).
+   glRotatef(-90, 1, 0, 0);
+   glRotatef(screen_orientation, 0, 0, 1);
+
+   // Convert ground coords to board coordinates.
+   glMultMatrixf(matrix[0]);
+
+   model_board_redraw(acceleration, magnetic_field);
+
+   eglSwapBuffers(display, surface);
 }
 
 static void exit_func(void)
@@ -259,7 +194,7 @@ static void read_input(void)
 
         if (result >= 9)
         {
-            break;
+            break; // Success
         }
 
         fprintf(stderr, "unrecognized input: only regonized %d items.\n", result);
@@ -268,25 +203,17 @@ static void read_input(void)
 
 int main()
 {
-    printf("Starting...\n");
-
     bcm_host_init();
-
-    // Start OGLES
-    init_ogl();
-
-    // Setup the model world
-    init_model_proj(state);
-
-    // initialise the OGLES texture(s)
+    init_opengl();
+    init_projection();
     init_textures();
 
     while(1)
     {
         read_input();
-        update_model(state);
-        redraw_scene(state);
+        redraw_scene();
     }
+
     exit_func();
     return 0;
 }
