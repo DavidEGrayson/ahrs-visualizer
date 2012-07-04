@@ -1,6 +1,6 @@
-#define EX 9   // X dimension
-#define EY 6   // Y dimension
-#define EZ 1   // Thickness
+#define EX 8     // X dimension
+#define EY 5     // Y dimension
+#define EZ 0.6   // Thickness
 
 #define AL 10  // axes length
 
@@ -116,18 +116,18 @@ static const GLfloat colors[] = {
 
    0,  0,  1,  1, // green
    0,  0,  1,  1,
-   0,  0,  1,  1,
+   0,  0,  0.8,  1,
    0,  0,  1,  1,
 
-   0, 0.5, 0.5,  1, // teal
-   0, 0.5, 0.5,  1,
-   0, 0.5, 0.5,  1,
-   0, 0.5, 0.5,  1,
+   0,  0,  1,  1,
+   0,  0,  1,  1,
+   0,  0,  0.9,  1,
+   0,  0,  0.9,  1,
 
-   0.5, 0.5,  0,  1, // yellow
-   0.5, 0.5,  0,  1,
-   0.5, 0.5,  0,  1,
-   0.5, 0.5,  0,  1,
+   0,  0,  0.8,  1,
+   0,  0,  0.9,  1,
+   0,  0,  0.8,  1,
+   0,  0,  1,  1,
 
    0.5,  0, 0.5,  1, // purple
    0.5,  0, 0.5,  1,
@@ -147,10 +147,10 @@ static const GLfloat colors[] = {
    0, 0, 1, 1,
 
    // Acceleration: cyan
-   0, 1, 1, 0.3,
+   0, 1, 1, 1,
    0, 1, 1, 1,
 
    // Magnetic field: yellow
-   1, 1, 0, 0.3,
+   1, 1, 0, 1,
    1, 1, 0, 1,
 };

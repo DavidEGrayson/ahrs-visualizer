@@ -80,6 +80,28 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     if (width){ *width = temp_width; }
     if (height){ *height = temp_height; }
 
+    printf("%s: %lux%lu %d\n", file_name, temp_width, temp_height, color_type);
+
+    if (bit_depth != 8)
+    {
+        fprintf(stderr, "%s: Unsupported bit depth %d.  Must be 8.\n", file_name, bit_depth);
+        return 0;
+    }
+
+    GLint format;
+    switch(color_type)
+    {
+    case PNG_COLOR_TYPE_RGB:
+        format = GL_RGB;
+        break;
+    case PNG_COLOR_TYPE_RGB_ALPHA:
+        format = GL_RGBA;
+        break;
+    default:
+        fprintf(stderr, "%s: Unknown libpng color type %d.\n", file_name, color_type);
+        return 0;
+    }
+
     // Update the png info struct.
     png_read_update_info(png_ptr, info_ptr);
 
@@ -125,7 +147,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     GLuint texture;
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, temp_width, temp_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image_data);
+    glTexImage2D(GL_TEXTURE_2D, 0, format, temp_width, temp_height, 0, format, GL_UNSIGNED_BYTE, image_data);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
     glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
