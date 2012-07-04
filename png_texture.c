@@ -143,15 +143,6 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     // read the png into image_data through row_pointers
     png_read_image(png_ptr, row_pointers);
 
-    int x, y;
-    for(x = 0; x < 300; x++)
-    {
-        for(y = 0; y < 100; y++)
-        {
-            row_pointers[y][3*x] = 0xFF;
-        }
-    }
-
     // Generate the OpenGL texture object
     GLuint texture;
     glGenTextures(1, &texture);
