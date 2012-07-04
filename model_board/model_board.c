@@ -16,7 +16,6 @@ static GLuint texture_top, texture_bottom;
 
 void model_board_init(void)
 {
-    png_texture_load(PATH "top.png", NULL, NULL);
     texture_top = png_texture_load(PATH "top2.png", NULL, NULL);
     texture_bottom = png_texture_load(PATH "bottom2.png", NULL, NULL);
 

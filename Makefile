@@ -23,22 +23,18 @@ CFLAGS += -D_FILE_OFFSET_BITS=64 -U_FORTIFY_SOURCE
 CFLAGS += -DHAVE_LIBOPENMAX=2 -DOMX -DOMX_SKIP64BIT
 CFLAGS += -ftree-vectorize -pipe -DUSE_EXTERNAL_OMX
 CFLAGS += -DHAVE_LIBBCM_HOST -DUSE_EXTERNAL_LIBBCM_HOST -DUSE_VCHIQ_ARM
+CFLAGS += -I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads
+CFLAGS += -I/opt/vc/src/hello_pi/libs/ilclient -I/opt/vc/src/hello_pi/libs/ilclient/libs/vgfont
+CFLAGS += -g -Wno-deprecated-declarations
 
-LDFLAGS+=-L/opt/vc/lib/ -lGLESv2 -lEGL -lopenmaxil -lbcm_host -lvcos -lvchiq_arm
-LDFLAGS+=$(shell libpng-config --libs)
-LDFLAGS+=/opt/vc/src/hello_pi/libs/ilclient/libilclient.a
-
-INCLUDES+=-I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads
-INCLUDES+=-I/opt/vc/src/hello_pi/libs/ilclient -I/opt/vc/src/hello_pi/libs/ilclient/libs/vgfont
+LDFLAGS += -L/opt/vc/lib/ -lGLESv2 -lEGL -lopenmaxil -lbcm_host -lvcos -lvchiq_arm
+LDFLAGS += $(shell libpng-config --libs)
+LDFLAGS += /opt/vc/src/hello_pi/libs/ilclient/libilclient.a
 
 all: $(BIN)
 
-%.o: %.c
-	@rm -f $@ 
-	$(CC) $(CFLAGS) $(INCLUDES) -g -c $< -o $@ -Wno-deprecated-declarations
-
 $(BIN): $(OBJs)
-	$(CC) -o $@ -Wl,--whole-archive $(OBJs) $(LDFLAGS) -Wl,--no-whole-archive -rdynamic
+	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
 	@rm -fv $(BIN) $(OBJs) $(DEPs)*.o

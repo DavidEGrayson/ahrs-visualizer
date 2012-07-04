@@ -80,7 +80,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     if (width){ *width = temp_width; }
     if (height){ *height = temp_height; }
 
-    printf("%s: %lux%lu %d\n", file_name, temp_width, temp_height, color_type);
+    //printf("%s: %lux%lu %d\n", file_name, temp_width, temp_height, color_type);
 
     if (bit_depth != 8)
     {
