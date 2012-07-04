@@ -11,10 +11,10 @@ static GLfloat vertices[] = {
     EX,  EY,  EZ,
 
    /* BOTTOM */
-   -EX, -EY,   0,
-   -EX,  EY,   0,
     EX, -EY,   0,
+   -EX, -EY,   0,
     EX,  EY,   0,
+   -EX,  EY,   0,
 
    /* LEFT EDGE */
    -EX, -EY,  EZ,
@@ -68,10 +68,10 @@ static GLfloat texCoords[] = {
    0,  1,
    1,  1,
 
-   1,  0,
-   1,  1,
    0,  0,
+   1,  0,
    0,  1,
+   1,  1,
 
    0,  0,
    0,  1,
