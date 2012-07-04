@@ -109,7 +109,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     int rowbytes = png_get_rowbytes(png_ptr, info_ptr);
 
     // glTexImage2d requires rows to be 4-byte aligned
-    rowbytes += 4 - (rowbytes % 4);
+    rowbytes += 3 - ((rowbytes-1) % 4);
 
     // Allocate the image_data as a big block, to be given to opengl
     png_byte * image_data;
@@ -142,6 +142,15 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
 
     // read the png into image_data through row_pointers
     png_read_image(png_ptr, row_pointers);
+
+    int x, y;
+    for(x = 0; x < 300; x++)
+    {
+        for(y = 0; y < 100; y++)
+        {
+            row_pointers[y][3*x] = 0xFF;
+        }
+    }
 
     // Generate the OpenGL texture object
     GLuint texture;
