@@ -1,8 +1,7 @@
 #define EX 8     // X dimension
 #define EY 5     // Y dimension
 #define EZ 0.6   // Thickness
-
-#define AL 10  // axes length
+#define AL 10    // axes length
 
 static GLfloat vertices[] = {
    /* TOP */
