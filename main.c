@@ -132,6 +132,11 @@ static void init_projection()
 
 static void init_textures(void)
 {
+    // Enable alpha blending so what we see through transparent
+    // parts of the model is the same as the background.
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
     glEnable(GL_TEXTURE_2D);
     model_board_init();
 }
