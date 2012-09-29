@@ -151,9 +151,10 @@ static void redraw_scene()
     glLoadIdentity();
     glTranslatef(0, 0, -30);
 
-    // Convert screen coords (x=right y=up z=out) to ground coords (x=east y=north z=up).
-    glRotatef(-90, 1, 0, 0);
-    glRotatef(screen_orientation, 0, 0, 1);
+    // Convert screen coords (right, up, out) to ground coords (north, east, down).
+    glRotatef(90, 1, 0, 0);
+    glRotatef(-90, 0, 0, 1);
+    glRotatef(-screen_orientation, 0, 0, 1);
 
     // Convert ground coords to board coordinates.
     glMultMatrixf(matrix[0]);
