@@ -112,8 +112,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     rowbytes += 3 - ((rowbytes-1) % 4);
 
     // Allocate the image_data as a big block, to be given to opengl
-    png_byte * image_data;
-    image_data = malloc(rowbytes * temp_height * sizeof(png_byte)+15);
+    png_byte * image_data = (png_byte *)malloc(rowbytes * temp_height * sizeof(png_byte)+15);
     if (image_data == NULL)
     {
         fprintf(stderr, "error: could not allocate memory for PNG image data\n");
@@ -123,7 +122,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     }
 
     // row_pointers is for pointing to image_data for reading the png with libpng
-    png_bytep * row_pointers = malloc(temp_height * sizeof(png_bytep));
+    png_byte ** row_pointers = (png_byte **)malloc(temp_height * sizeof(png_byte *));
     if (row_pointers == NULL)
     {
         fprintf(stderr, "error: could not allocate memory for PNG row pointers\n");
@@ -134,8 +133,7 @@ GLuint png_texture_load(const char * file_name, int * width, int * height)
     }
 
     // set the individual row_pointers to point at the correct offsets of image_data
-    int i;
-    for (i = 0; i < temp_height; i++)
+    for (unsigned int i = 0; i < temp_height; i++)
     {
         row_pointers[temp_height - 1 - i] = image_data + i * rowbytes;
     }

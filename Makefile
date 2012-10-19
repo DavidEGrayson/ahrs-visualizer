@@ -1,23 +1,26 @@
-OBJs := $(patsubst %.c, %.o, $(wildcard *.c)) model_board/model_board.o
+OBJs := $(patsubst %.cpp, %.o, $(wildcard *.cpp)) model_board/model_board.o
 DEPs := $(OBJs:%.o=%.d)
 BIN  := ahrs-visualizer
 
 # Let the C file know where it is in the directory structure
 # so it can access files in the same directory.
-CFLAGS += -DPATH="\"$(dir $@)\""
+CPPFLAGS += -DPATH="\"$(dir $@)\""
+
+# Use a modern language
+CPPFLAGS += --std=c++0x
 
 # Turn on "all" warnings
-CFLAGS += -Wall
+CPPFLAGS += -Wall
 
 # Fix http://gcc.gnu.org/bugzilla/show_bug.cgi?id=42748
-CFLAGS += -Wno-psabi
+CPPFLAGS += -Wno-psabi
 
 # Generate .d files with dependency info
-CFLAGS += -MD -MP
+CPPFLAGS += -MD -MP
 
-CFLAGS += -I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads
+CPPFLAGS += -I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads
 
-CFLAGS += -g -Wno-deprecated-declarations
+CPPFLAGS += -g -Wno-deprecated-declarations
 
 LDFLAGS += -L/opt/vc/lib/ -lGLESv2 
 

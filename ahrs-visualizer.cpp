@@ -33,6 +33,15 @@ EGLDisplay display;
 EGLSurface surface;
 EGLContext context;
 
+static inline VC_RECT_T rect_width_height(int width, int height)
+{
+    VC_RECT_T r;
+    r.x = r.y = 0;
+    r.width = width;
+    r.height = height;
+    return r;
+}
+
 // Sets the display, OpenGL|ES context and screen stuff
 static void init_opengl(void)
 {
@@ -77,15 +86,15 @@ static void init_opengl(void)
     int32_t success = graphics_get_display_size(0 /* LCD */, &screen_width, &screen_height);
     assert( success >= 0 );
 
-    VC_RECT_T dst_rect = {.x = 0, .y = 0, .width = screen_width, .height = screen_height};
-    VC_RECT_T src_rect = {.x = 0, .y = 0, .width = screen_width<<16, .height = screen_height<<16};
+    VC_RECT_T dst_rect = rect_width_height(screen_width, screen_height);
+    VC_RECT_T src_rect = rect_width_height(screen_width<<16, screen_height<<16);
 
     dispman_display = vc_dispmanx_display_open(0 /* LCD */);
     dispman_update = vc_dispmanx_update_start(0);
 
     dispman_element = vc_dispmanx_element_add (dispman_update, dispman_display,
                                                0/*layer*/, &dst_rect, 0/*src*/,
-                                               &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, 0/*transform*/);
+                                               &src_rect, DISPMANX_PROTECTION_NONE, 0 /*alpha*/, 0/*clamp*/, (DISPMANX_TRANSFORM_T)0/*transform*/);
 
     nativewindow.element = dispman_element;
     nativewindow.width = screen_width;
