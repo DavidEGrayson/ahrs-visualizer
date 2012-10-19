@@ -26,7 +26,6 @@ LDFLAGS += $(shell libpng-config --libs)
 all: $(BIN)
 
 $(BIN): $(OBJs)
-	$(CC) -o $@ $^ $(LDFLAGS)
 
 clean:
 	@rm -fv $(BIN) $(OBJs) $(DEPs)*.o
