@@ -4,6 +4,7 @@
 #include <math.h>
 #include <assert.h>
 #include <unistd.h>
+#include <iostream>
 
 #include <bcm_host.h>
 
@@ -11,10 +12,14 @@
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
 
-#include "model_board/model_board.h"
+#include <boost/program_options.hpp>
+namespace opts = boost::program_options;
 
-/* OpenGL rotation matrix that converts ground coordinates
- * (x=easy, y=north, z=up) into board coordinates.  It is
+#include "model_board/model_board.h"
+#include "version.h"
+
+/* OpenGL rotation matrix that converts board coordinates
+ * into ground coordinates (x=north, y=east, z=down).  It is
  * column-major so do matrix[COL][ROW]. */
 float matrix[4][4];
 
@@ -43,7 +48,7 @@ static inline VC_RECT_T rect_width_height(int width, int height)
 }
 
 // Sets the display, OpenGL|ES context and screen stuff
-static void init_opengl(void)
+static void opengl_init(void)
 {
     EGLBoolean result;
     EGLint num_config;
@@ -122,7 +127,7 @@ static void init_opengl(void)
 }
 
 // Description: Sets the OpenGL|ES model to default values
-static void init_projection()
+static void projection_init()
 {
     float nearp = 1, farp = 500.0f, hht, hwd;
 
@@ -139,7 +144,7 @@ static void init_projection()
     glFrustumf(-hwd, hwd, -hht, hht, nearp, farp);
 }
 
-static void init_textures(void)
+static void textures_init(void)
 {
     // Enable alpha blending so what we see through transparent
     // parts of the model is the same as the background.
@@ -173,7 +178,7 @@ static void redraw_scene()
     eglSwapBuffers(display, surface);
 }
 
-static void exit_func(void)
+static void opengl_deinit(void)
 {
     // clear screen
     glClear(GL_COLOR_BUFFER_BIT);
@@ -220,12 +225,56 @@ static void read_input(void)
     }
 }
 
-int main()
+static void read_args(int argc, char *argv[])
 {
+    try
+    {
+        opts::options_description desc("Allowed options");
+        desc.add_options()
+            ("help,h", "produce help message")
+            ("version,v", "print version number")
+            (",s", opts::value<float>(&screen_orientation)->default_value(0),
+             "specifies your screen orientation.  "
+             "0 = screen faces South, 90 = West, 180 = North, 270 = East\n")
+            ;
+        opts::variables_map options;
+        opts::store(opts::command_line_parser(argc, argv).options(desc).run(), options);
+        opts::notify(options);
+
+        if(options.count("help"))
+        {
+            std::cout << desc << std::endl;
+            exit(0);
+        }
+
+        if (options.count("version"))
+        {
+            std::cout << VERSION << std::endl;
+            exit(0);
+        }
+
+        std::cerr << screen_orientation << " degrees" << std::endl; // tmphax!
+    }
+    catch(const opts::multiple_occurrences & error)
+    {
+        std::cerr << "Error: " << error.what() << " of " << error.get_option_name() << " option." << std::endl;
+        exit(1);
+    }
+    catch(const std::exception & error)
+    {
+        std::cerr << "Error: " << error.what() << std::endl;
+        exit(9);
+    }
+}
+
+int main(int argc, char *argv[])
+{
+    read_args(argc, argv);
+
     bcm_host_init();
-    init_opengl();
-    init_projection();
-    init_textures();
+    opengl_init();
+    projection_init();
+    textures_init();
 
     while(1)
     {
@@ -233,7 +282,8 @@ int main()
         redraw_scene();
     }
 
-    exit_func();
+    opengl_deinit();
+    bcm_host_deinit();
     return 0;
 }
 

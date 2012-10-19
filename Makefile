@@ -28,6 +28,9 @@ LDFLAGS += -L/opt/vc/lib/ -lGLESv2
 # libpng for reading in textures
 LDFLAGS += $(shell libpng-config --libs)
 
+# Use a boost library for reading command-line arguments.
+LDFLAGS += -lboost_program_options
+
 all: $(BIN)
 
 $(BIN): $(OBJs)
