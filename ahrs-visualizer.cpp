@@ -5,6 +5,8 @@
 #include <assert.h>
 #include <unistd.h>
 #include <iostream>
+#include <fstream>
+#include <wordexp.h>
 
 #include <bcm_host.h>
 
@@ -229,21 +231,40 @@ static void read_args(int argc, char *argv[])
 {
     try
     {
-        opts::options_description desc("Allowed options");
-        desc.add_options()
+        opts::options_description generic("Generic options");
+        generic.add_options()
             ("help,h", "produce help message")
             ("version,v", "print version number")
-            (",s", opts::value<float>(&screen_orientation)->default_value(0),
+            ;
+
+        opts::options_description config("Configuration");
+        config.add_options()
+            ("screen-angle,a", opts::value<float>(&screen_orientation)->default_value(0),
              "specifies your screen orientation.  "
              "0 = screen faces South, 90 = West, 180 = North, 270 = East\n")
             ;
-        opts::variables_map options;
-        opts::store(opts::command_line_parser(argc, argv).options(desc).run(), options);
+
+        opts::options_description cmdline_options;
+        cmdline_options.add(generic);
+        cmdline_options.add(config);
+
+        // Read options from command line.
+        opts::variables_map options;        
+        opts::store(opts::command_line_parser(argc, argv).options(cmdline_options).run(), options);
+
+        // Read options form config file, ~/.ahrs-visualizer
+        {
+            wordexp_t expansion_result;
+            wordexp("~/.ahrs-visualizer", &expansion_result, 0);
+            std::ifstream file(expansion_result.we_wordv[0]);
+            opts::store(opts::parse_config_file(file, config), options);
+        }
+
         opts::notify(options);
 
         if(options.count("help"))
         {
-            std::cout << desc << std::endl;
+            std::cout << cmdline_options << std::endl;
             exit(0);
         }
 
