@@ -2,10 +2,10 @@
 #include <stdlib.h>
 #include <string.h>
 #include <math.h>
-#include <assert.h>
 #include <unistd.h>
 #include <iostream>
 #include <fstream>
+#include <stdexcept>
 #include <wordexp.h>
 
 #include <bcm_host.h>
@@ -75,23 +75,38 @@ static void opengl_init(void)
 
     // get an EGL display connection
     display = eglGetDisplay(EGL_DEFAULT_DISPLAY);
-    assert(display!=EGL_NO_DISPLAY);
+    if (display == EGL_NO_DISPLAY)
+    {
+        throw std::runtime_error("Failed to get display.  eglGetDisplay failed.");
+    }
 
     // initialize the EGL display connection
     result = eglInitialize(display, NULL, NULL);
-    assert(EGL_FALSE != result);
+    if (result == EGL_FALSE)
+    {
+        throw std::runtime_error("Failed to initialize display.  eglInitialize failed.");
+    }
 
     // get an appropriate EGL frame buffer configuration
     result = eglChooseConfig(display, attribute_list, &config, 1, &num_config);
-    assert(EGL_FALSE != result);
+    if (result == EGL_FALSE)
+    {
+        throw std::runtime_error("Failed to choose config.  eglChooseConfig failed.");
+    }
 
     // create an EGL rendering context
     context = eglCreateContext(display, config, EGL_NO_CONTEXT, NULL);
-    assert(context!=EGL_NO_CONTEXT);
+    if (context == EGL_NO_CONTEXT)
+    {
+        throw std::runtime_error("Failed to create context.  eglCreateContext failed.");
+    }
 
     // create an EGL window surface
     int32_t success = graphics_get_display_size(0 /* LCD */, &screen_width, &screen_height);
-    assert( success >= 0 );
+    if (success < 0)
+    {
+        throw std::runtime_error("Failed to get display size.");
+    }
 
     VC_RECT_T dst_rect = rect_width_height(screen_width, screen_height);
     VC_RECT_T src_rect = rect_width_height(screen_width<<16, screen_height<<16);
@@ -118,7 +133,10 @@ static void opengl_init(void)
 
     // connect the context to the surface
     result = eglMakeCurrent(display, surface, surface, context);
-    assert(EGL_FALSE != result);
+    if (result == EGL_FALSE)
+    {
+        throw std::runtime_error("Failed to connect to the surface.");
+    }
 
     glClearColor(0, 0, 0, 0.5);   // set background colors
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear buffers
@@ -249,7 +267,7 @@ static void read_args(int argc, char *argv[])
         cmdline_options.add(config);
 
         // Read options from command line.
-        opts::variables_map options;        
+        opts::variables_map options;
         opts::store(opts::command_line_parser(argc, argv).options(cmdline_options).run(), options);
 
         // Read options form config file, ~/.ahrs-visualizer
@@ -281,30 +299,33 @@ static void read_args(int argc, char *argv[])
         std::cerr << "Error: " << error.what() << " of " << error.get_option_name() << " option." << std::endl;
         exit(1);
     }
+}
+
+int main(int argc, char *argv[])
+{
+    try
+    {
+        read_args(argc, argv);
+
+        bcm_host_init();
+        opengl_init();
+        projection_init();
+        textures_init();
+
+        while(1)
+        {
+            read_input();
+            redraw_scene();
+        }
+
+        opengl_deinit();
+        bcm_host_deinit();
+        return 0;
+    }
     catch(const std::exception & error)
     {
         std::cerr << "Error: " << error.what() << std::endl;
         exit(9);
     }
-}
-
-int main(int argc, char *argv[])
-{
-    read_args(argc, argv);
-
-    bcm_host_init();
-    opengl_init();
-    projection_init();
-    textures_init();
-
-    while(1)
-    {
-        read_input();
-        redraw_scene();
-    }
-
-    opengl_deinit();
-    bcm_host_deinit();
-    return 0;
 }
 
