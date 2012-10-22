@@ -291,8 +291,6 @@ static void read_args(int argc, char *argv[])
             std::cout << VERSION << std::endl;
             exit(0);
         }
-
-        std::cerr << screen_orientation << " degrees" << std::endl; // tmphax!
     }
     catch(const opts::multiple_occurrences & error)
     {
