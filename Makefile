@@ -14,32 +14,48 @@ CPPFLAGS += -Wno-psabi
 # Generate .d files with dependency info
 CPPFLAGS += -MD -MP
 
-# Let the C file know where it is in the directory structure
-# so it can access files in the same directory.
-CPPFLAGS += -DPATH="\"$(dir $@)\""
-
 # Debuggable and optimized.
 CPPFLAGS += -g -O2 
 
 # Weird stuff needed to do OpenGL ES 2 on a Raspberry Pi
-CPPFLAGS += -I/opt/vc/include/ -I/opt/vc/include/interface/vcos/pthreads
-LDFLAGS += -L/opt/vc/lib/ -lGLESv2
+CPPFLAGS += -I/opt/vc/include -I/opt/vc/include/interface/vcos/pthreads
+LDFLAGS += -L/opt/vc/lib -lGLESv2
+
+# Tell the cpp file where assets are stored.
+CPPFLAGS += -DASSET_DIR="\"$(assetdir)\""
 
 # libpng for reading in textures
 LDFLAGS += $(shell libpng-config --libs)
 
-# Use a boost library for reading command-line arguments.
+# boost_program_options library for reading command-line arguments.
 LDFLAGS += -lboost_program_options
 
+.PHONY: all
 all: $(BIN)
 
 $(BIN): $(OBJs)
 
+.PHONY: clean
 clean:
 	@rm -fv $(BIN) $(OBJs) $(DEPs) *.o
 
 -include $(DEPs)
 
+prefix = $(DESTDIR)/usr
+bindir = $(prefix)/bin
+sharedir = $(prefix)/share
+assetdir = $(sharedir)/$(BIN)
+mandir = $(sharedir)/man
+man1dir = $(mandir)/man1
+
+.PHONY: install_assets
+install_assets:
+	install -m 0644 $(wildcard assets/*.png $(assetdir)
+
+.PHONY: install
+install: $(BIN) install_assets
+	install $(BIN) $(bindir)
+	install -m 0644 $(BIN).1 $(man1dir)
 
 # Options that came from the Raspberry Pi example 3D code but are apparently
 # not necessary because I was able to remove them:
