@@ -50,7 +50,8 @@ man1dir = $(mandir)/man1
 
 .PHONY: install_assets
 install_assets:
-	install -m 0644 $(wildcard assets/*.png $(assetdir)
+	install -d $(assetdir)
+	install -m 0644 $(wildcard assets/*.png) $(assetdir)
 
 .PHONY: install
 install: $(BIN) install_assets
