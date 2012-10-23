@@ -172,8 +172,8 @@ static void textures_init(void)
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     glEnable(GL_TEXTURE_2D);
-    model_board_init();
 }
+
 
 static void redraw_scene()
 {
@@ -282,7 +282,8 @@ static void read_args(int argc, char *argv[])
 
         if(options.count("help"))
         {
-            std::cout << cmdline_options << std::endl;
+            std::cout << cmdline_options;
+            std::cout << "For more information, run: man ahrs-visualizer" << std::endl;
             exit(0);
         }
 
@@ -309,6 +310,7 @@ int main(int argc, char *argv[])
         opengl_init();
         projection_init();
         textures_init();
+        model_board_init();
 
         while(1)
         {

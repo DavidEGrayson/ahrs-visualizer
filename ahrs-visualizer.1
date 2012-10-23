@@ -1,0 +1,61 @@
+.TH AHRS-VISUALIZER 1
+.SH NAME
+ahrs-visualizer - Draws a 3D representation of an IMU's orientation. 
+.SH SYNOPSIS
+.B ahrs-visualizer [\fIOPTIONS\fP]
+.SH DESCRIPTION
+ahrs-visualizer reads orientation data on its standard input and uses that
+to display a 3D representation of the orientation.
+
+Currently, the presence of GPU-specific code means that it only works
+on the Raspberry Pi but it can probably be ported to other boards.
+It uses OpenGL ES 2.0.
+
+This program runs fine from the console; you do not need to run X.
+
+This program is meant to be used with \fBminimu9-ahrs\fP, a separate
+utility that reads data from the Pololu MinIMU-9 and computes its orientation.
+To pipe direction cosine matrix (DCM) data from minimu9-ahrs to
+ahrs-visualizer, simply run the following command:
+.IP
+minimu9-ahrs | ahrs-visualizer
+.P
+For documentation of the input data format that ahrs-visualizer expects,
+please see the documentation of the output format of minimu9-ahrs
+in its man page.
+
+The 3D model is a Pololu MinIMU-9 v2.
+The X axis is drawn as a red line.
+The Y axis is drawn as a green line.
+The Z axis is drawn as a blue line.
+The acceleration vector is drawn as a cyan line.
+The magnetic field vector is drawn as a yellow line.
+
+.SS OPTIONS
+.TP
+\fB-h, --help\fP
+produce help message
+.TP
+\fB-v, --version\fP
+print version number
+.TP
+\fB-s, --screen-angle \fBANGLE\fR
+Specifies the angle of your screen.  Default value is 0.
+0 = screen faces South, 90 = West, 180 = North, 270 = East.
+Screens that are not mounted vertically are not supported.
+
+.SH FILES
+.TP
+~/.ahrs-visualizer
+Configuration file; each line has the format "option-name=value".
+For example, you could write "screen-angle = -33" in this file so
+that you don't have to specify the screen angle on the command line
+every time you run ahrs-visualizer.
+
+.SH AUTHOR
+.nf
+David Grayson <davidegrayson@gmail.com>
+http://www.github.com/DavidEGrayson/
+.fi
+.SH SEE ALSO
+minimu9-ahrs(1)

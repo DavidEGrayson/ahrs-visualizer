@@ -3,3 +3,4 @@ ahrs-visualizer
 *.o
 *.d
 \#*\#
+*~

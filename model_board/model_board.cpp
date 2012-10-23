@@ -4,6 +4,7 @@
 #include <math.h>
 #include <assert.h>
 #include <unistd.h>
+#include <stdexcept>
 
 #include <GLES/gl.h>
 #include <EGL/egl.h>
@@ -18,6 +19,11 @@ void model_board_init(void)
 {
     texture_top = png_texture_load(ASSET_DIR "/top2.png", NULL, NULL);
     texture_bottom = png_texture_load(ASSET_DIR "/bottom2.png", NULL, NULL);
+
+    if (texture_top == 0 || texture_bottom == 0)
+    {
+        throw std::runtime_error("Loading textures failed.");
+    }
 
     glEnableClientState(GL_VERTEX_ARRAY);
     glVertexPointer(3, GL_FLOAT, 0, vertices);
