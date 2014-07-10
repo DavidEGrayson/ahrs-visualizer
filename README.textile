@@ -23,8 +23,14 @@ Understanding the visualization:
 
 h2. Building From Source
 
-Just run:
+Navigate to the top-level source directory and run these commands:
 
 <pre><code>sudo apt-get install libpng-dev libboost-program-options-dev
 make
 sudo make install_assets</code></pre>
+
+h2. Version History
+
+* 1.0.1 (2014-07-09): Added an extra include directory to the Makefile (thanks Shantanu Bhadoria).
+* 1.0.0 (2012-11-10): Initial release.
+
