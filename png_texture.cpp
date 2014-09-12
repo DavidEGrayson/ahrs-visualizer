@@ -1,3 +1,6 @@
+// This one file (png_texture.cpp) is free and unencumbered software
+// released into the public domain.
+
 #include <GLES/gl.h>
 #include <EGL/egl.h>
 #include <EGL/eglext.h>
@@ -5,6 +8,9 @@
 
 GLuint png_texture_load(const char * file_name, int * width, int * height)
 {
+    // This function was originally written by David Grayson for
+    // https://github.com/DavidEGrayson/ahrs-visualizer
+
     png_byte header[8];
 
     FILE *fp = fopen(file_name, "rb");
