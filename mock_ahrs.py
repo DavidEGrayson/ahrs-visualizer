@@ -1,9 +1,11 @@
-#!/usr/bin/python -u
+#!/usr/bin/env python2
 
 import time
+import sys
 
 def out(*args):
   print "%f %f %f %f %f %f %f %f %f  %f %f %f  %f %f %f" % args
+  sys.stdout.flush()
 
 # Origin
 while True:
