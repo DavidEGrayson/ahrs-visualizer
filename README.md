@@ -26,8 +26,8 @@ see the documentation of the output format of minimu9-ahrs in its man page.
 
 This program is meant to be used with [minimu9-ahrs], a separate
 utility that reads data from the Pololu MinIMU-9 and computes its
-orientation.  To get that working, please follow the instructions in
-the [minimu9-ahrs tutorial].
+orientation.  To get that working, follow the instructions at the
+aforementioned link.
 
 ### Building ahrs-visualizer from source
 
@@ -90,4 +90,3 @@ On the Raspberry Pi, the right way to fix this error is to add your user to the 
 
 [Raspberry Pi]: https://www.raspberrypi.org/
 [minimu9-ahrs]: https://github.com/DavidEGrayson/minimu9-ahrs
-[minimu9-ahrs tutorial]: https://github.com/DavidEGrayson/minimu9-ahrs/wiki/Home
