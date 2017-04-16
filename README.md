@@ -1,6 +1,9 @@
 **ahrs-visualizer** reads orientation data on its standard input and uses that
   to display a 3D representation of the orientation.
 
+To see what the visualization looks like, check out this
+[video showing the MinIMU-9 v2 with a Raspberry Pi](https://www.youtube.com/watch?v=8daR-wtQIx0).
+
 Currently, the presence of GPU-specific code means that it only works on the
 [Raspberry Pi] but it can probably be ported to other boards.  It uses OpenGL ES
 2.0.
@@ -17,18 +20,16 @@ run the following command:
 For documentation of the input data format that ahrs-visualizer expects, please
 see the documentation of the output format of minimu9-ahrs in its man page.
 
-Understanding the visualization:
+## Getting started
 
-* The 3D model is a Pololu MinIMU-9 v2.
-* The X axis is drawn as a red line.
-* The Y axis is drawn as a green line.
-* The Z axis is drawn as a blue line.
-* The acceleration vector is drawn as a cyan line.
-* The magnetic field vector is drawn as a yellow line.
+### Get minimu9-ahrs working
 
-**For help getting started, please see: https://github.com/DavidEGrayson/ahrs-visualizer/wiki.**
+This program is meant to be used with [minimu9-ahrs], a separate
+utility that reads data from the Pololu MinIMU-9 and computes its
+orientation.  To get that working, please follow the instructions in
+the [minimu9-ahrs tutorial].
 
-## Building from source
+### Building ahrs-visualizer from source
 
 Navigate to the top-level source directory and run these commands:
 
@@ -43,8 +44,37 @@ To install the visualizer, run:
 
     sudo make install
 
-After installing, you should be able to run `ahrs-visualizer` from the
-command line and run `man ahrs-visualizer` for help.
+### Invoking
+
+To pipe direction cosine matrix (DCM) data from minimu9-ahrs to
+ahrs-visualizer, simply run the following command:
+
+    minimu9-ahrs | ahrs-visualizer
+
+The visualizer runs fine from the console; you do not need to run X.
+
+Run `man ahrs-visualizer` for more help and details about the options
+the program accepts.
+
+## Understanding the visualization:
+
+- The 3D model is a Pololu MinIMU-9 v2.
+- The X axis is drawn as a red line.
+- The Y axis is drawn as a green line.
+- The Z axis is drawn as a blue line.
+- The acceleration vector is drawn as a cyan line.
+- The magnetic field vector is drawn as a yellow line.
+
+## Error about opening a vchiq instance
+
+If the program cannot open `/dev/vchiq` because of a permissions problem, you will see the following error:
+
+    Warning: Could not open /dev/vchiq: Permission denied.
+        * failed to open vchiq instance
+
+On the Raspberry Pi, the right way to fix this error is to add your user to the `video` group.  Just runL
+
+    sudo usermod -a -G video $(whoami)
 
 ## Version history
 
@@ -60,3 +90,4 @@ command line and run `man ahrs-visualizer` for help.
 
 [Raspberry Pi]: https://www.raspberrypi.org/
 [minimu9-ahrs]: https://github.com/DavidEGrayson/minimu9-ahrs
+[minimu9-ahrs tutorial]: https://github.com/DavidEGrayson/minimu9-ahrs/wiki/Home
