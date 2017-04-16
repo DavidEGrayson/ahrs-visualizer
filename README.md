@@ -10,16 +10,6 @@ Currently, the presence of GPU-specific code means that it only works on the
 
 This program runs fine from the console; you do not need to run X.
 
-This program is meant to be used with [minimu9-ahrs], a separate utility that
-reads data from the Pololu MinIMU-9 and computes its orientation.  To pipe
-direction cosine matrix (DCM) data from minimu9-ahrs to ahrs-visualizer, simply
-run the following command:
-
-    minimu9-ahrs | ahrs-visualizer
-
-For documentation of the input data format that ahrs-visualizer expects, please
-see the documentation of the output format of minimu9-ahrs in its man page.
-
 ## Getting started
 
 ### Get minimu9-ahrs working
