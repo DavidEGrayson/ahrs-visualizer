@@ -2,7 +2,7 @@
   to display a 3D representation of the orientation.
 
 To see what the visualization looks like, check out this
-[video showing the MinIMU-9 v2 with a Raspberry Pi](https://www.youtube.com/watch?v=8daR-wtQIx0).
+[video showing the MinIMU-9 v2 with a Raspberry Pi][video].
 
 Currently, the presence of GPU-specific code means that it only works on the
 [Raspberry Pi] but it can probably be ported to other boards.  It uses OpenGL ES
@@ -55,12 +55,15 @@ the program accepts.
 
 ## Error about opening a vchiq instance
 
-If the program cannot open `/dev/vchiq` because of a permissions problem, you will see the following error:
+If the program cannot open `/dev/vchiq` because of a permissions
+problem, you will see the following error:
 
     Warning: Could not open /dev/vchiq: Permission denied.
         * failed to open vchiq instance
 
-On the Raspberry Pi, the right way to fix this error is to add your user to the `video` group.  Just run the following command and then reboot:
+On the Raspberry Pi, the right way to fix this error is to add your
+user to the `video` group.  Just run the following command and then
+reboot:
 
     sudo usermod -a -G video $(whoami)
 
@@ -79,3 +82,4 @@ On the Raspberry Pi, the right way to fix this error is to add your user to the 
 [Raspberry Pi]: https://www.raspberrypi.org/
 [minimu9-ahrs]: https://github.com/DavidEGrayson/minimu9-ahrs
 [Pololu MinIMU-9 v2]: https://www.pololu.com/product/1268
+[video]: https://www.youtube.com/watch?v=8daR-wtQIx0
