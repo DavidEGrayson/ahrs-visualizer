@@ -8,8 +8,6 @@ Currently, the presence of GPU-specific code means that it only works on the
 [Raspberry Pi] but it can probably be ported to other boards.  It uses OpenGL ES
 2.0.
 
-This program runs fine from the console; you do not need to run X.
-
 ## Getting started
 
 ### Get minimu9-ahrs working
@@ -36,8 +34,8 @@ To install the visualizer, run:
 
 ### Invoking
 
-To pipe direction cosine matrix (DCM) data from minimu9-ahrs to
-ahrs-visualizer, simply run the following command:
+To pipe direction cosine matrix (DCM) data from `minimu9-ahrs` to
+`ahrs-visualizer`, simply run the following command:
 
     minimu9-ahrs | ahrs-visualizer
 
@@ -48,7 +46,7 @@ the program accepts.
 
 ## Understanding the visualization:
 
-- The 3D model is a Pololu MinIMU-9 v2.
+- The 3D model is a [Pololu MinIMU-9 v2].
 - The X axis is drawn as a red line.
 - The Y axis is drawn as a green line.
 - The Z axis is drawn as a blue line.
@@ -62,7 +60,7 @@ If the program cannot open `/dev/vchiq` because of a permissions problem, you wi
     Warning: Could not open /dev/vchiq: Permission denied.
         * failed to open vchiq instance
 
-On the Raspberry Pi, the right way to fix this error is to add your user to the `video` group.  Just runL
+On the Raspberry Pi, the right way to fix this error is to add your user to the `video` group.  Just run the following command and then reboot:
 
     sudo usermod -a -G video $(whoami)
 
@@ -80,3 +78,4 @@ On the Raspberry Pi, the right way to fix this error is to add your user to the 
 
 [Raspberry Pi]: https://www.raspberrypi.org/
 [minimu9-ahrs]: https://github.com/DavidEGrayson/minimu9-ahrs
+[Pololu MinIMU-9 v2]: https://www.pololu.com/product/1268
