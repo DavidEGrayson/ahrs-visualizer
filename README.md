@@ -38,7 +38,10 @@ Navigate to the top-level source directory and run these commands:
 
 ## Version History
 
-- 1.0.2 (2017-04-16): Fixed the "DSO missing from command line" linker error (thanks pskora).
+- 1.0.2 (2017-04-16):
+  - Fixed the "DSO missing from command line" linker error (thanks pskora).
+  - Added a warning if `/dev/vchiq` cannot be opened, because the error message
+    from `bcm_host_init` is not helpful.
 - 1.0.1 (2014-07-09): Added an extra include directory to the Makefile (thanks Shantanu Bhadoria).
 - 1.0.0 (2012-11-10): Initial release.
 

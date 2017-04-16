@@ -7,6 +7,7 @@
 #include <fstream>
 #include <stdexcept>
 #include <wordexp.h>
+#include <fcntl.h>
 
 #include <bcm_host.h>
 
@@ -49,6 +50,31 @@ static inline VC_RECT_T rect_width_height(int width, int height)
     return r;
 }
 
+static void nice_bcm_host_init()
+{
+    int fd = open("/dev/vchiq", O_RDWR | O_LARGEFILE);
+    if (fd == -1)
+    {
+        char buffer[256];
+        char * msg = strerror_r(errno, buffer, sizeof(buffer) - 1);
+        if (msg)
+        {
+            std::cerr << "Warning: Could not open /dev/vchiq: "
+              << msg << "." << std::endl;
+        }
+        else
+        {
+            std::cerr << "Warning: Could not open /dev/vchiq." << std::endl;
+        }
+    }
+    else
+    {
+        close(fd);
+    }
+
+    bcm_host_init();
+}
+
 // Sets the display, OpenGL|ES context and screen stuff
 static void opengl_init(void)
 {
@@ -70,7 +96,7 @@ static void opengl_init(void)
             EGL_SURFACE_TYPE, EGL_WINDOW_BIT,
             EGL_NONE
         };
-   
+
     EGLConfig config;
 
     // get an EGL display connection
@@ -306,7 +332,7 @@ int main(int argc, char *argv[])
     {
         read_args(argc, argv);
 
-        bcm_host_init();
+        nice_bcm_host_init();
         opengl_init();
         projection_init();
         textures_init();
