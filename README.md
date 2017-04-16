@@ -28,7 +28,7 @@ Understanding the visualization:
 
 **For help getting started, please see: https://github.com/DavidEGrayson/ahrs-visualizer/wiki.**
 
-h2. Building From Source
+## Building From Source
 
 Navigate to the top-level source directory and run these commands:
 
@@ -36,7 +36,7 @@ Navigate to the top-level source directory and run these commands:
     make
     sudo make install_assets
 
-h2. Version History
+## Version History
 
 - 1.0.2 (2017-04-16): Fixed the "DSO missing from command line" linker error (thanks pskora).
 - 1.0.1 (2014-07-09): Added an extra include directory to the Makefile (thanks Shantanu Bhadoria).
