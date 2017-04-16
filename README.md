@@ -42,6 +42,7 @@ Navigate to the top-level source directory and run these commands:
   - Fixed the "DSO missing from command line" linker error (thanks pskora).
   - Added a warning if `/dev/vchiq` cannot be opened, because the error message
     from `bcm_host_init` is not helpful.
+  - Changed the default installation prefix from /usr to /usr/local.
 - 1.0.1 (2014-07-09): Added an extra include directory to the Makefile (thanks Shantanu Bhadoria).
 - 1.0.0 (2012-11-10): Initial release.
 
