@@ -1,3 +1,5 @@
+# ahrs-visualizer
+
 **ahrs-visualizer** reads orientation data on its standard input and uses that
   to display a 3D representation of the orientation.
 
