@@ -1,6 +1,6 @@
 .TH AHRS-VISUALIZER 1
 .SH NAME
-ahrs-visualizer - Draws a 3D representation of an IMU's orientation. 
+ahrs-visualizer - Draws a 3D representation of an IMU's orientation.
 .SH SYNOPSIS
 .B ahrs-visualizer [\fIOPTIONS\fP]
 .SH DESCRIPTION
@@ -51,6 +51,11 @@ Configuration file; each line has the format "option-name=value".
 For example, you could write "screen-angle = -33" in this file so
 that you don't have to specify the screen angle on the command line
 every time you run ahrs-visualizer.
+
+.SH ENVIRONMENT VARIABLES
+.TP
+ASSET_DIR
+Specify the directory to load assets (e.g. texture files) from.
 
 .SH AUTHOR
 .nf

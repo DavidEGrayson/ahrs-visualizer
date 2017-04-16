@@ -12,13 +12,15 @@
 
 #include "data.h"
 #include "../png_texture.h"
+#include "../asset_dir.h"
 
 static GLuint texture_top, texture_bottom;
 
 void model_board_init(void)
 {
-    texture_top = png_texture_load(ASSET_DIR "/top2.png", NULL, NULL);
-    texture_bottom = png_texture_load(ASSET_DIR "/bottom2.png", NULL, NULL);
+    std::string asset_dir = asset_dir_get();
+    texture_top = png_texture_load((asset_dir + "/top2.png").c_str(), NULL, NULL);
+    texture_bottom = png_texture_load((asset_dir + "/bottom2.png").c_str(), NULL, NULL);
 
     if (texture_top == 0 || texture_bottom == 0)
     {

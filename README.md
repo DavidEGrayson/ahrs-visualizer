@@ -28,21 +28,33 @@ Understanding the visualization:
 
 **For help getting started, please see: https://github.com/DavidEGrayson/ahrs-visualizer/wiki.**
 
-## Building From Source
+## Building from source
 
 Navigate to the top-level source directory and run these commands:
 
     sudo apt-get install libpng-dev libboost-program-options-dev
     make
-    sudo make install_assets
 
-## Version History
+If you want to try out the visualizer before installing it, you can run:
 
-- 1.0.2 (2017-04-16):
+    ./mock_ahrs.py | ASSET_DIR=assets ./ahrs-visualizer
+
+To install the visualizer, run:
+
+    sudo make install
+
+After installing, you should be able to run `ahrs-visualizer` from the
+command line and run `man ahrs-visualizer` for help.
+
+## Version history
+
+- 1.1.0 (2017-04-16):
   - Fixed the "DSO missing from command line" linker error (thanks pskora).
   - Added a warning if `/dev/vchiq` cannot be opened, because the error message
     from `bcm_host_init` is not helpful.
   - Changed the default installation prefix from /usr to /usr/local.
+  - Added support for the ASSET_DIR environment variable so you can easily
+    try the program out before installing it.
 - 1.0.1 (2014-07-09): Added an extra include directory to the Makefile (thanks Shantanu Bhadoria).
 - 1.0.0 (2012-11-10): Initial release.
 

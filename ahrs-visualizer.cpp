@@ -18,6 +18,7 @@
 #include <boost/program_options.hpp>
 namespace opts = boost::program_options;
 
+#include "asset_dir.h"
 #include "model_board/model_board.h"
 #include "version.h"
 
@@ -332,6 +333,7 @@ int main(int argc, char *argv[])
     {
         read_args(argc, argv);
 
+        asset_dir_init();
         nice_bcm_host_init();
         opengl_init();
         projection_init();
