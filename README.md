@@ -1,3 +1,10 @@
+# WARNING
+
+This project does not compile on modern versions of Raspberry Pi OS due to
+breaking changes in the OpenGL API we use.  See
+[issue #11](https://github.com/DavidEGrayson/ahrs-visualizer/issues/11) for
+more discussion.
+
 # ahrs-visualizer
 
 **ahrs-visualizer** reads orientation data on its standard input and uses that
